@@ -1,0 +1,29 @@
+"""Dependency composition for the Motor API."""
+
+from __future__ import annotations
+
+from __future__ import annotations
+
+from fastapi import Depends
+
+from app.application.use_cases.compute_risk_score import ComputeRiskScoreUseCase
+from app.domain.calculators.findrisc import FINDRISCCalculator
+from app.domain.services.scoring_engine import ScoringEngine
+
+
+def get_scoring_engine() -> ScoringEngine:
+    """Constructs the ScoringEngine with all available calculators."""
+    calculators = [
+        FINDRISCCalculator(),
+    ]
+    return ScoringEngine(calculators=calculators)
+
+
+def get_compute_risk_score_use_case(
+    engine: ScoringEngine = Depends(get_scoring_engine),
+) -> ComputeRiskScoreUseCase:
+    """Constructs the ComputeRiskScoreUseCase."""
+    return ComputeRiskScoreUseCase(engine=engine)
+
+
+ComputeRiskScoreUseCaseDep = Depends(get_compute_risk_score_use_case)
