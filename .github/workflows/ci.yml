@@ -1,0 +1,53 @@
+name: Motor — Lint, Check & Test
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "motor/**"
+  pull_request:
+    branches: [main]
+    paths:
+      - "motor/**"
+
+jobs:
+  quality-check:
+    name: Lint, Format, Test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: motor
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+
+      - name: Install / Sync environment with uv
+        run: uv sync --locked
+
+      - name: Lint (ruff)
+        run: uv run ruff check .
+
+      - name: Format check (ruff format)
+        run: uv run ruff format . --check
+
+      - name: Run tests with coverage
+        shell: bash
+        run: |
+          set -o pipefail
+          COVERAGE_CORE=sysmon uv run pytest | tee coverage.txt
+
+      - name: Post coverage to summary
+        if: always()
+        shell: bash
+        run: |
+          if [ -f coverage.txt ]; then
+            echo "## 📊 Motor Test Coverage" >> $GITHUB_STEP_SUMMARY
+            echo '```text' >> $GITHUB_STEP_SUMMARY
+            sed -n '/Name.*Stmts/,/TOTAL/p' coverage.txt >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+          fi
