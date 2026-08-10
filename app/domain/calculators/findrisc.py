@@ -12,11 +12,18 @@ class FINDRISCCalculator(ScoreCalculator):
 
     def calculate(self, data: EmployeeHealthData) -> ScoreResult:
         # 1. Validation
-        if data.age is None or data.weight is None or data.height is None or \
-           data.sex is None or data.waist_circumference is None or \
-           data.daily_physical_activity is None or data.fruits_vegetables is None or \
-           data.hypertension_medication is None or data.previous_high_glucose is None or \
-           data.family_diabetes is None:
+        if (
+            data.age is None
+            or data.weight is None
+            or data.height is None
+            or data.sex is None
+            or data.waist_circumference is None
+            or data.daily_physical_activity is None
+            or data.fruits_vegetables is None
+            or data.hypertension_medication is None
+            or data.previous_high_glucose is None
+            or data.family_diabetes is None
+        ):
             return ScoreResult(
                 score_id="findrisc",
                 score_name="FINDRISC",
@@ -38,7 +45,7 @@ class FINDRISCCalculator(ScoreCalculator):
         factors["age"] = age_pts
 
         # 3. BMI points
-        bmi = data.weight / (data.height ** 2)
+        bmi = data.weight / (data.height**2)
         bmi_pts = 0
         if 25 <= bmi < 30:
             bmi_pts = 1

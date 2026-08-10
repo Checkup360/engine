@@ -9,3 +9,5 @@ lint:
 
 format:
 	uv run ruff format .
+
+pre-commit: format lint test

@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
-from app.application.dto.risk_score_dto import ComputeRiskScoreCommand, RiskAssessmentDTO
+from app.application.dto.risk_score_dto import (
+    ComputeRiskScoreCommand,
+    RiskAssessmentDTO,
+)
 from app.domain.entities.employee_health_data import EmployeeHealthData
 from app.domain.services.scoring_engine import ScoringEngine
 

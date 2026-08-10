@@ -3,11 +3,10 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from enum import Enum
-from typing import Optional
+from enum import StrEnum
 
 
-class CalculationStatus(str, Enum):
+class CalculationStatus(StrEnum):
     """Status of a score calculation."""
 
     CALCULATED = "CALCULATED"
@@ -24,8 +23,8 @@ class ScoreResult:
     score_name: str
     domain: str
     status: CalculationStatus
-    raw_value: Optional[float] = None
-    normalized_value: Optional[float] = None
-    risk_level: Optional[str] = None
-    explanation: Optional[str] = None
+    raw_value: float | None = None
+    normalized_value: float | None = None
+    risk_level: str | None = None
+    explanation: str | None = None
     contributing_factors: dict[str, float] = field(default_factory=dict)

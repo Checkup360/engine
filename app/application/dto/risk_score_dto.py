@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Optional
 
 from app.domain.value_objects.score_result import ScoreResult
 
@@ -12,25 +11,25 @@ from app.domain.value_objects.score_result import ScoreResult
 class ComputeRiskScoreCommand:
     """Command to compute the risk score."""
 
-    age: Optional[int] = None
-    sex: Optional[str] = None
-    weight: Optional[float] = None
-    height: Optional[float] = None
-    waist_circumference: Optional[float] = None
-    systolic_blood_pressure: Optional[float] = None
-    total_cholesterol: Optional[float] = None
-    hdl: Optional[float] = None
-    triglycerides: Optional[float] = None
-    smoker: Optional[bool] = None
-    daily_physical_activity: Optional[bool] = None
-    fruits_vegetables: Optional[bool] = None
-    hypertension_medication: Optional[bool] = None
-    previous_high_glucose: Optional[bool] = None
-    family_diabetes: Optional[str] = None
-    snoring: Optional[bool] = None
-    tired: Optional[bool] = None
-    observed_apnea: Optional[bool] = None
-    neck_circumference: Optional[float] = None
+    age: int | None = None
+    sex: str | None = None
+    weight: float | None = None
+    height: float | None = None
+    waist_circumference: float | None = None
+    systolic_blood_pressure: float | None = None
+    total_cholesterol: float | None = None
+    hdl: float | None = None
+    triglycerides: float | None = None
+    smoker: bool | None = None
+    daily_physical_activity: bool | None = None
+    fruits_vegetables: bool | None = None
+    hypertension_medication: bool | None = None
+    previous_high_glucose: bool | None = None
+    family_diabetes: str | None = None
+    snoring: bool | None = None
+    tired: bool | None = None
+    observed_apnea: bool | None = None
+    neck_circumference: float | None = None
 
 
 @dataclass(frozen=True)

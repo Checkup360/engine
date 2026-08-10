@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Sequence
+from collections.abc import Sequence
 
 from app.domain.calculators.base import ScoreCalculator
 from app.domain.entities.employee_health_data import EmployeeHealthData
@@ -17,7 +17,8 @@ class ScoringEngine:
     def __init__(self, calculators: Sequence[ScoreCalculator]) -> None:
         """
         Initializes the engine with a list of calculators to execute.
-        This allows injecting any combination of calculators without modifying the engine.
+        This allows injecting any combination of calculators without modifying
+        the engine.
         """
         self._calculators = calculators
 

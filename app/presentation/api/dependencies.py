@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from __future__ import annotations
-
 from fastapi import Depends
 
 from app.application.use_cases.compute_risk_score import ComputeRiskScoreUseCase
@@ -20,7 +18,7 @@ def get_scoring_engine() -> ScoringEngine:
 
 
 def get_compute_risk_score_use_case(
-    engine: ScoringEngine = Depends(get_scoring_engine),
+    engine: ScoringEngine = Depends(get_scoring_engine),  # noqa: B008
 ) -> ComputeRiskScoreUseCase:
     """Constructs the ComputeRiskScoreUseCase."""
     return ComputeRiskScoreUseCase(engine=engine)

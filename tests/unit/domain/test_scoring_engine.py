@@ -1,7 +1,5 @@
 """Unit tests for the ScoringEngine."""
 
-from typing import Sequence
-
 from app.domain.calculators.base import ScoreCalculator
 from app.domain.entities.employee_health_data import EmployeeHealthData
 from app.domain.services.scoring_engine import ScoringEngine
