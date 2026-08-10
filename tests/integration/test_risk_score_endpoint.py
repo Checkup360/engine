@@ -21,10 +21,11 @@ def test_post_risk_score_returns_200_and_all_stubs_not_calculable() -> None:
 
     assert "scores" in data
     scores = data["scores"]
-    assert len(scores) == 1
+    assert len(scores) == 2
 
     expected_score_ids = {
         "findrisc",
+        "stop_bang",
     }
 
     actual_score_ids = {s["score_id"] for s in scores}

@@ -1,0 +1,91 @@
+from app.domain.calculators.base import ScoreCalculator
+from app.domain.entities.employee_health_data import EmployeeHealthData
+from app.domain.value_objects.score_result import CalculationStatus, ScoreResult
+
+
+class STOPBANGCalculator(ScoreCalculator):
+    """Calculates STOP-BANG risk for sleep apnea screening."""
+
+    def calculate(self, data: EmployeeHealthData) -> ScoreResult:
+        # 1. Validation
+        if (
+            data.snoring is None
+            or data.tired is None
+            or data.observed_apnea is None
+            or data.hypertension_medication is None
+            or data.weight is None
+            or data.height is None
+            or data.age is None
+            or data.neck_circumference is None
+            or data.sex is None
+        ):
+            return ScoreResult(
+                score_id="stop_bang",
+                score_name="STOP-BANG",
+                domain="Sleep Apnea",
+                status=CalculationStatus.NOT_CALCULABLE,
+                explanation="Missing required data for STOP-BANG",
+            )
+
+        factors: dict[str, float] = {}
+        total_score = 0
+
+        # S - Snoring
+        pts = 1 if data.snoring else 0
+        factors["snoring"] = pts
+        total_score += pts
+
+        # T - Tired
+        pts = 1 if data.tired else 0
+        factors["tired"] = pts
+        total_score += pts
+
+        # O - Observed apnea
+        pts = 1 if data.observed_apnea else 0
+        factors["observed_apnea"] = pts
+        total_score += pts
+
+        # P - Pressure (Hypertension)
+        pts = 1 if data.hypertension_medication else 0
+        factors["pressure"] = pts
+        total_score += pts
+
+        # B - BMI > 35
+        bmi = data.weight / (data.height**2)
+        pts = 1 if bmi > 35 else 0
+        factors["bmi"] = pts
+        total_score += pts
+
+        # A - Age > 50
+        pts = 1 if data.age > 50 else 0
+        factors["age"] = pts
+        total_score += pts
+
+        # N - Neck circumference > 40 cm
+        pts = 1 if data.neck_circumference > 40 else 0
+        factors["neck"] = pts
+        total_score += pts
+
+        # G - Gender = Male
+        pts = 1 if data.sex.upper() == "M" else 0
+        factors["gender"] = pts
+        total_score += pts
+
+        # Interpretation
+        risk_level = "Unknown"
+        if 0 <= total_score <= 2:
+            risk_level = "Low"
+        elif 3 <= total_score <= 4:
+            risk_level = "Intermediate"
+        elif 5 <= total_score <= 8:
+            risk_level = "High"
+
+        return ScoreResult(
+            score_id="stop_bang",
+            score_name="STOP-BANG",
+            domain="Sleep Apnea",
+            status=CalculationStatus.CALCULATED,
+            raw_value=total_score,
+            risk_level=risk_level,
+            contributing_factors=factors,
+        )
