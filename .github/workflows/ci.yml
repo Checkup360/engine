@@ -3,20 +3,14 @@ name: Motor — Lint, Check & Test
 on:
   push:
     branches: [main]
-    paths:
-      - "motor/**"
   pull_request:
     branches: [main]
-    paths:
-      - "motor/**"
 
 jobs:
   quality-check:
     name: Lint, Format, Test
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: motor
+
 
     steps:
       - uses: actions/checkout@v4
