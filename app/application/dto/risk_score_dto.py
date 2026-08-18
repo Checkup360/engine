@@ -30,6 +30,7 @@ class ComputeRiskScoreCommand:
     tired: bool | None = None
     observed_apnea: bool | None = None
     neck_circumference: float | None = None
+    target_scores: list[str] | None = None
 
 
 @dataclass(frozen=True)

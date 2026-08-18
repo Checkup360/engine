@@ -10,6 +10,10 @@ from app.domain.value_objects.score_result import CalculationStatus, ScoreResult
 class FINDRISCCalculator(ScoreCalculator):
     """Calculates FINDRISC diabetes risk (Type 2)."""
 
+    @property
+    def score_id(self) -> str:
+        return "findrisc"
+
     def calculate(self, data: EmployeeHealthData) -> ScoreResult:
         # 1. Validation
         if (

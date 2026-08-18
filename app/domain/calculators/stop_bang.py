@@ -6,6 +6,10 @@ from app.domain.value_objects.score_result import CalculationStatus, ScoreResult
 class STOPBANGCalculator(ScoreCalculator):
     """Calculates STOP-BANG risk for sleep apnea screening."""
 
+    @property
+    def score_id(self) -> str:
+        return "stop_bang"
+
     def calculate(self, data: EmployeeHealthData) -> ScoreResult:
         # 1. Validation
         if (

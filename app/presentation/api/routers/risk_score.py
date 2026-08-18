@@ -1,8 +1,8 @@
-"""Risk Score router — /api/v1/risk-score."""
+"""Risk Score router — /risk-scores."""
 
 from __future__ import annotations
 
-from fastapi import APIRouter, status
+from fastapi import APIRouter, Query, status
 
 from app.application.dto.risk_score_dto import ComputeRiskScoreCommand
 from app.application.use_cases.compute_risk_score import ComputeRiskScoreUseCase
@@ -13,7 +13,7 @@ from app.presentation.api.response_models.risk_score_response import (
     ScoreResultResponse,
 )
 
-router = APIRouter(prefix="/api/v1/risk-score", tags=["risk-score"])
+router = APIRouter(prefix="/risk-scores", tags=["risk-scores"])
 
 
 @router.post(
@@ -22,8 +22,9 @@ router = APIRouter(prefix="/api/v1/risk-score", tags=["risk-score"])
     status_code=status.HTTP_200_OK,
     summary="Compute health risk scores from the provided parameters",
 )
-def compute_risk_score(
+def compute_risk_scores(
     request: RiskScoreRequest,
+    target_scores: list[str] | None = Query(default=None, description="List of specific scores to calculate. If empty, calculates all possible scores."),
     use_case: ComputeRiskScoreUseCase = ComputeRiskScoreUseCaseDep,
 ) -> RiskAssessmentResponse:
     """
@@ -49,6 +50,7 @@ def compute_risk_score(
         tired=request.tired,
         observed_apnea=request.observed_apnea,
         neck_circumference=request.neck_circumference,
+        target_scores=target_scores,
     )
 
     result_dto = use_case.execute(command)
@@ -70,3 +72,4 @@ def compute_risk_score(
     ]
 
     return RiskAssessmentResponse(scores=response_scores)
+

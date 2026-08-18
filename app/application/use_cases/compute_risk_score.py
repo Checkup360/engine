@@ -46,7 +46,7 @@ class ComputeRiskScoreUseCase:
         )
 
         # Execute Domain Logic
-        results = self._engine.compute_scores(health_data)
+        results = self._engine.compute_scores(health_data, target_scores=command.target_scores)
 
         # Return Application DTO
         return RiskAssessmentDTO(scores=results)

@@ -12,7 +12,9 @@ class DummyEngine(ScoringEngine):
         # Override to not require real calculators
         pass
 
-    def compute_scores(self, data: EmployeeHealthData) -> list[ScoreResult]:
+    def compute_scores(
+        self, data: EmployeeHealthData, target_scores: list[str] | None = None
+    ) -> list[ScoreResult]:
         # Just return a dummy result
         return [
             ScoreResult(

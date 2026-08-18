@@ -7,8 +7,12 @@ from app.domain.value_objects.score_result import CalculationStatus, ScoreResult
 
 
 class MockCalculator(ScoreCalculator):
-    def __init__(self, score_id: str) -> None:
-        self.score_id = score_id
+    def __init__(self, score_id_val: str) -> None:
+        self._score_id = score_id_val
+
+    @property
+    def score_id(self) -> str:
+        return self._score_id
 
     def calculate(self, data: EmployeeHealthData) -> ScoreResult:
         return ScoreResult(
@@ -32,3 +36,15 @@ def test_scoring_engine_computes_all_calculators() -> None:
     assert results[0].score_id == "calc1"
     assert results[1].score_id == "calc2"
     assert results[0].raw_value == 42.0
+
+
+def test_scoring_engine_filters_by_target_scores() -> None:
+    calc1 = MockCalculator("calc1")
+    calc2 = MockCalculator("calc2")
+    engine = ScoringEngine(calculators=[calc1, calc2])
+    data = EmployeeHealthData()
+
+    results = engine.compute_scores(data, target_scores=["calc2"])
+
+    assert len(results) == 1
+    assert results[0].score_id == "calc2"

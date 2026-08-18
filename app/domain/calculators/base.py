@@ -14,6 +14,12 @@ class ScoreCalculator(abc.ABC):
     Calculators must be stateless.
     """
 
+    @property
+    @abc.abstractmethod
+    def score_id(self) -> str:
+        """Returns the unique identifier of the score this calculator computes."""
+        pass
+
     @abc.abstractmethod
     def calculate(self, data: EmployeeHealthData) -> ScoreResult:
         """

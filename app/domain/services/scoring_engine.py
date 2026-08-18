@@ -22,12 +22,17 @@ class ScoringEngine:
         """
         self._calculators = calculators
 
-    def compute_scores(self, data: EmployeeHealthData) -> list[ScoreResult]:
+    def compute_scores(
+        self, data: EmployeeHealthData, target_scores: list[str] | None = None
+    ) -> list[ScoreResult]:
         """
         Executes all configured calculators and returns their results.
+        If target_scores is provided, only executes calculators with a matching score_id.
         """
         results: list[ScoreResult] = []
         for calculator in self._calculators:
+            if target_scores and calculator.score_id not in target_scores:
+                continue
             result = calculator.calculate(data)
             results.append(result)
 

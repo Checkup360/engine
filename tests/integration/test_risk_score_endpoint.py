@@ -14,7 +14,7 @@ def test_post_risk_score_returns_200_and_all_stubs_not_calculable() -> None:
         "weight": 90,
     }
 
-    response = client.post("/api/v1/risk-score", json=payload)
+    response = client.post("/risk-scores", json=payload)
 
     assert response.status_code == 200
     data = response.json()
@@ -33,3 +33,18 @@ def test_post_risk_score_returns_200_and_all_stubs_not_calculable() -> None:
 
     for score in scores:
         assert score["status"] == "NOT_CALCULABLE"
+
+
+def test_post_risk_scores_with_query_param_returns_only_requested() -> None:
+    payload = {
+        "age": 45,
+        "sex": "M",
+        "weight": 90,
+    }
+
+    response = client.post("/risk-scores?target_scores=findrisc", json=payload)
+    assert response.status_code == 200
+    data = response.json()
+    assert "scores" in data
+    assert len(data["scores"]) == 1
+    assert data["scores"][0]["score_id"] == "findrisc"
