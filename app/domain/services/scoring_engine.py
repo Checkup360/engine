@@ -27,7 +27,7 @@ class ScoringEngine:
     ) -> list[ScoreResult]:
         """
         Executes all configured calculators and returns their results.
-        If target_scores is provided, only executes calculators with a matching score_id.
+        If target_scores is provided, executes only matching score_ids.
         """
         results: list[ScoreResult] = []
         for calculator in self._calculators:

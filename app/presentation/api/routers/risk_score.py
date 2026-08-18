@@ -24,7 +24,7 @@ router = APIRouter(prefix="/risk-scores", tags=["risk-scores"])
 )
 def compute_risk_scores(
     request: RiskScoreRequest,
-    target_scores: list[str] | None = Query(default=None, description="List of specific scores to calculate. If empty, calculates all possible scores."),
+    target_scores: list[str] | None = Query(None, description="Scores to run"),
     use_case: ComputeRiskScoreUseCase = ComputeRiskScoreUseCaseDep,
 ) -> RiskAssessmentResponse:
     """
@@ -72,4 +72,3 @@ def compute_risk_scores(
     ]
 
     return RiskAssessmentResponse(scores=response_scores)
-
