@@ -1,4 +1,4 @@
-"""Dependency composition for the Motor API."""
+"""Dependency composition for the Engine API."""
 
 from __future__ import annotations
 

@@ -1,5 +1,5 @@
 [project]
-name = "motor"
+name = "engine"
 version = "0.1.0"
 description = "Score calculation engine for Checkup360"
 readme = "README.md"

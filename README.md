@@ -1,6 +1,6 @@
-# Motor - Risk Scoring Engine
+# Engine - Risk Scoring Engine
 
-Motor is a production-grade occupational health platform focused on deterministic health scoring. It follows Clean/Hexagonal Architecture to decouple business rules from infrastructure and presentation frameworks.
+Engine is a production-grade occupational health platform focused on deterministic health scoring. It follows Clean/Hexagonal Architecture to decouple business rules from infrastructure and presentation frameworks.
 
 ## API Usage
 

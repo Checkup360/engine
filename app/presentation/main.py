@@ -9,7 +9,7 @@ from app.presentation.api.routers import risk_score, version
 load_dotenv()
 
 app = FastAPI(
-    title="Motor",
+    title="Engine",
     version="0.1.0",
 )
 
