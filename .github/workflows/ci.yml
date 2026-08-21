@@ -1,4 +1,4 @@
-name: Motor — Lint, Check & Test
+name: Engine — Lint, Check & Test
 
 on:
   push:
@@ -40,7 +40,7 @@ jobs:
         shell: bash
         run: |
           if [ -f coverage.txt ]; then
-            echo "## 📊 Motor Test Coverage" >> $GITHUB_STEP_SUMMARY
+            echo "## 📊 Engine Test Coverage" >> $GITHUB_STEP_SUMMARY
             echo '```text' >> $GITHUB_STEP_SUMMARY
             sed -n '/Name.*Stmts/,/TOTAL/p' coverage.txt >> $GITHUB_STEP_SUMMARY
             echo '```' >> $GITHUB_STEP_SUMMARY
