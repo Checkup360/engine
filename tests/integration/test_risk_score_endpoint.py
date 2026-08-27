@@ -11,7 +11,14 @@ def test_post_findrisc_score_returns_200_and_single_score_result() -> None:
     payload = {
         "age": 45,
         "sex": "M",
-        "weight": 90,
+        "weight": 90.0,
+        "height": 1.80,
+        "waist_circumference": 96.0,
+        "daily_physical_activity": True,
+        "fruits_vegetables": True,
+        "hypertension_medication": False,
+        "previous_high_glucose": False,
+        "family_diabetes": "no",
     }
 
     response = client.post("/risk-scores/findrisc", json=payload)
@@ -22,8 +29,22 @@ def test_post_findrisc_score_returns_200_and_single_score_result() -> None:
     assert data["score_id"] == "findrisc"
     assert data["score_name"] == "FINDRISC"
     assert data["domain"] == "Diabetes"
-    assert data["status"] == "NOT_CALCULABLE"
+    assert data["status"] == "CALCULATED"
+    assert data["raw_value"] is not None
     assert "contributing_factors" in data
+
+
+def test_post_missing_required_fields_returns_422() -> None:
+    payload = {
+        "age": 45,
+        "sex": "M",
+    }
+
+    response = client.post("/risk-scores/findrisc", json=payload)
+
+    assert response.status_code == 422
+    data = response.json()
+    assert "detail" in data
 
 
 def test_post_stop_bang_score_returns_200_and_single_score_result() -> None:

@@ -10,25 +10,25 @@ from app.domain.entities.stop_bang_data import StopBangData
 class StopBangRequest(BaseModel):
     """Payload for STOP-BANG sleep apnea screening."""
 
-    snoring: bool | None = Field(
-        None, description="Do you snore loudly (louder than talking)?"
+    snoring: bool = Field(..., description="Do you snore loudly (louder than talking)?")
+    tired: bool = Field(
+        ...,
+        description="Do you often feel tired, fatigued, or sleepy during daytime?",
     )
-    tired: bool | None = Field(
-        None, description="Do you often feel tired, fatigued, or sleepy during daytime?"
+    observed_apnea: bool = Field(
+        ..., description="Has anyone observed you stop breathing during sleep?"
     )
-    observed_apnea: bool | None = Field(
-        None, description="Has anyone observed you stop breathing during sleep?"
+    hypertension_medication: bool = Field(
+        ...,
+        description="Do you have or are being treated for high blood pressure?",
     )
-    hypertension_medication: bool | None = Field(
-        None, description="Do you have or are being treated for high blood pressure?"
+    weight: float = Field(..., gt=0, lt=500, description="Weight in kilograms")
+    height: float = Field(..., gt=0, lt=3.0, description="Height in meters")
+    age: int = Field(..., ge=0, le=130, description="Age in years")
+    neck_circumference: float = Field(
+        ..., gt=0, lt=100, description="Neck circumference in cm"
     )
-    weight: float | None = Field(None, gt=0, lt=500, description="Weight in kilograms")
-    height: float | None = Field(None, gt=0, lt=3.0, description="Height in meters")
-    age: int | None = Field(None, ge=0, le=130, description="Age in years")
-    neck_circumference: float | None = Field(
-        None, gt=0, lt=100, description="Neck circumference in cm"
-    )
-    sex: str | None = Field(None, description="Biological sex ('M' or 'F')")
+    sex: str = Field(..., description="Biological sex ('M' or 'F')")
 
     def to_domain(self) -> StopBangData:
         """Converts HTTP request model directly into domain StopBangData entity."""

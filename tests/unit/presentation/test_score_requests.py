@@ -64,3 +64,29 @@ def test_stop_bang_request_to_domain() -> None:
     assert data.age == 52
     assert data.neck_circumference == 42.0
     assert data.sex == "M"
+
+
+def test_findrisc_request_raises_validation_error_on_missing_fields() -> None:
+    import pytest
+    from pydantic import ValidationError
+
+    with pytest.raises(ValidationError) as exc_info:
+        FindriscRequest.model_validate({"age": 45})
+
+    errors = exc_info.value.errors()
+    missing_fields = {e["loc"][0] for e in errors}
+    assert "sex" in missing_fields
+    assert "weight" in missing_fields
+
+
+def test_stop_bang_request_raises_validation_error_on_missing_fields() -> None:
+    import pytest
+    from pydantic import ValidationError
+
+    with pytest.raises(ValidationError) as exc_info:
+        StopBangRequest.model_validate({"age": 50})
+
+    errors = exc_info.value.errors()
+    missing_fields = {e["loc"][0] for e in errors}
+    assert "snoring" in missing_fields
+    assert "neck_circumference" in missing_fields
