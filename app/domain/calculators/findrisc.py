@@ -111,7 +111,9 @@ class FINDRISCCalculator(RiskScoreCalculator[FindriscData]):
         elif 21 <= total_score <= 26:
             risk_level = "Very high"
 
-        normalized_value = round(max(0.0, min(100.0, 100.0 - (total_score / 26.0) * 100.0)), 1)
+        normalized_value = round(
+            max(0.0, min(100.0, 100.0 - (total_score / 26.0) * 100.0)), 1
+        )
 
         return ScoreResult(
             score_id="findrisc",

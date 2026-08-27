@@ -88,7 +88,9 @@ class STOPBANGCalculator(RiskScoreCalculator[StopBangData]):
         elif 5 <= total_score <= 8:
             risk_level = "High"
 
-        normalized_value = round(max(0.0, min(100.0, 100.0 - (total_score / 8.0) * 100.0)), 1)
+        normalized_value = round(
+            max(0.0, min(100.0, 100.0 - (total_score / 8.0) * 100.0)), 1
+        )
 
         return ScoreResult(
             score_id="stop_bang",
