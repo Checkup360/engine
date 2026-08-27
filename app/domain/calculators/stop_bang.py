@@ -88,12 +88,15 @@ class STOPBANGCalculator(RiskScoreCalculator[StopBangData]):
         elif 5 <= total_score <= 8:
             risk_level = "High"
 
+        normalized_value = round(max(0.0, min(100.0, 100.0 - (total_score / 8.0) * 100.0)), 1)
+
         return ScoreResult(
             score_id="stop_bang",
             score_name="STOP-BANG",
             domain="Sleep Apnea",
             status=CalculationStatus.CALCULATED,
             raw_value=total_score,
+            normalized_value=normalized_value,
             risk_level=risk_level,
             contributing_factors=factors,
         )
