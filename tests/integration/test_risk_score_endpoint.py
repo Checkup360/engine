@@ -98,3 +98,24 @@ def test_post_invalid_payload_types_returns_422() -> None:
     assert response.status_code == 422
     data = response.json()
     assert "detail" in data
+
+
+def test_get_catalog_returns_200_and_available_scores() -> None:
+    response = client.get("/risk-scores/catalog")
+
+    assert response.status_code == 200
+    catalog = response.json()
+    assert isinstance(catalog, list)
+    assert len(catalog) >= 2
+
+    score_ids = [item["score_id"] for item in catalog]
+    assert "findrisc" in score_ids
+    assert "stop_bang" in score_ids
+
+    findrisc = next(item for item in catalog if item["score_id"] == "findrisc")
+    assert findrisc["score_name"] == "FINDRISC"
+    assert findrisc["domain"] == "Diabetes"
+    assert "age" in findrisc["required_fields"]
+    assert "waist_circumference" in findrisc["required_fields"]
+    assert "field_schema" in findrisc
+

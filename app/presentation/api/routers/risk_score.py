@@ -9,12 +9,29 @@ from fastapi import APIRouter, Body, Path, status
 from app.application.use_cases.compute_risk_score import ComputeRiskScoreUseCase
 from app.domain.exceptions import ScoreCalculatorNotFoundError
 from app.presentation.api.dependencies import ComputeRiskScoreUseCaseDep
-from app.presentation.api.request_models.registry import get_request_model
+from app.presentation.api.request_models.registry import (
+    get_catalog,
+    get_request_model,
+)
+from app.presentation.api.response_models.catalog_response import (
+    ScoreCatalogItemResponse,
+)
 from app.presentation.api.response_models.risk_score_response import (
     ScoreResultResponse,
 )
 
 router = APIRouter(prefix="/risk-scores", tags=["risk-scores"])
+
+
+@router.get(
+    "/catalog",
+    response_model=list[ScoreCatalogItemResponse],
+    status_code=status.HTTP_200_OK,
+    summary="Get catalog of available risk scores and required fields",
+)
+def get_score_catalog() -> list[ScoreCatalogItemResponse]:
+    """Returns the list of available risk score calculators and their required parameters."""
+    return get_catalog()
 
 
 @router.post(
@@ -23,6 +40,7 @@ router = APIRouter(prefix="/risk-scores", tags=["risk-scores"])
     status_code=status.HTTP_200_OK,
     summary="Compute a specific health risk score from the provided parameters",
 )
+
 def compute_risk_score(
     score_id: Annotated[
         str, Path(description="The ID of the risk score model to evaluate")
