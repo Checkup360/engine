@@ -65,3 +65,15 @@ def test_post_unknown_score_returns_404() -> None:
     data = response.json()
     assert "detail" in data
     assert "unknown_score" in data["detail"]
+
+
+def test_post_invalid_payload_types_returns_422() -> None:
+    payload = {
+        "age": "not_an_integer",
+    }
+
+    response = client.post("/risk-scores/findrisc", json=payload)
+
+    assert response.status_code == 422
+    data = response.json()
+    assert "detail" in data

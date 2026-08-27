@@ -2,13 +2,15 @@
 
 from __future__ import annotations
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 from app.domain.value_objects.score_result import CalculationStatus
 
 
 class ScoreResultResponse(BaseModel):
     """Serialized form of a single score result."""
+
+    model_config = ConfigDict(from_attributes=True)
 
     score_id: str
     score_name: str
