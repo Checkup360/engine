@@ -2,19 +2,19 @@
 
 from __future__ import annotations
 
-from app.domain.entities.employee_health_data import EmployeeHealthData
+from app.domain.entities.stop_bang_data import StopBangData
 from app.domain.services.risk_score_calculator import RiskScoreCalculator
 from app.domain.value_objects.score_result import CalculationStatus, ScoreResult
 
 
-class STOPBANGCalculator(RiskScoreCalculator):
+class STOPBANGCalculator(RiskScoreCalculator[StopBangData]):
     """Calculates STOP-BANG risk for sleep apnea screening."""
 
     @property
     def score_id(self) -> str:
         return "stop_bang"
 
-    def calculate(self, data: EmployeeHealthData) -> ScoreResult:
+    def calculate(self, data: StopBangData) -> ScoreResult:
         # 1. Validation
         if (
             data.snoring is None

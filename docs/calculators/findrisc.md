@@ -78,7 +78,7 @@ The total score (0-26) categorizes the risk of developing Type 2 Diabetes within
 
 ## Engine Required Variables
 
-To calculate FINDRISC via the `ScoringEngine`, the `EmployeeHealthData` object **must** have the following fields fully populated (none can be null):
+To calculate FINDRISC via the `ScoringEngine`, the `FindriscData` object **must** have the following fields fully populated (none can be null):
 
 - `age` (int)
 - `weight` (float)

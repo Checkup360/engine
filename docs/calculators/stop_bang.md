@@ -40,7 +40,7 @@ The total score (0-8) stratifies the risk of having Obstructive Sleep Apnea:
 
 ## Engine Required Variables
 
-To calculate the STOP-BANG score via the `ScoringEngine`, the `EmployeeHealthData` object **must** have the following fields fully populated (none can be null):
+To calculate the STOP-BANG score via the `ScoringEngine`, the `StopBangData` object **must** have the following fields fully populated (none can be null):
 
 - `snoring` (bool)
 - `tired` (bool)

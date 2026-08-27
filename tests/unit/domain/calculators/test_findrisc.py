@@ -1,14 +1,14 @@
 """Unit tests for FINDRISCCalculator."""
 
 from app.domain.calculators.findrisc import FINDRISCCalculator
-from app.domain.entities.employee_health_data import EmployeeHealthData
+from app.domain.entities.findrisc_data import FindriscData
 from app.domain.value_objects.score_result import CalculationStatus
 
 
 def test_findrisc_not_calculable_if_missing_data() -> None:
     calculator = FINDRISCCalculator()
     # Missing all data
-    result = calculator.calculate(EmployeeHealthData())
+    result = calculator.calculate(FindriscData())
     assert result.status == CalculationStatus.NOT_CALCULABLE
     assert result.score_id == "findrisc"
 
@@ -16,7 +16,7 @@ def test_findrisc_not_calculable_if_missing_data() -> None:
 def test_findrisc_calculates_zero_risk_profile() -> None:
     calculator = FINDRISCCalculator()
     # Profile with all lowest risk options
-    data = EmployeeHealthData(
+    data = FindriscData(
         age=30,
         weight=60.0,
         height=1.75,  # BMI = 19.59
@@ -41,7 +41,7 @@ def test_findrisc_calculates_zero_risk_profile() -> None:
 
 def test_findrisc_calculates_high_risk_profile() -> None:
     calculator = FINDRISCCalculator()
-    data = EmployeeHealthData(
+    data = FindriscData(
         age=66,  # >=65 -> 4 pts
         weight=100.0,
         height=1.70,  # BMI = 34.6 -> 3 pts
@@ -70,7 +70,7 @@ def test_findrisc_calculates_high_risk_profile() -> None:
 
 def test_findrisc_risk_levels() -> None:
     calculator = FINDRISCCalculator()
-    base_data = EmployeeHealthData(
+    base_data = FindriscData(
         weight=60.0,
         height=1.75,
         sex="M",
@@ -84,13 +84,13 @@ def test_findrisc_risk_levels() -> None:
 
     # 0-6: Low
     # 0 pts total
-    data0 = EmployeeHealthData(**{**base_data.__dict__, "age": 40})
+    data0 = FindriscData(**{**base_data.__dict__, "age": 40})
     result = calculator.calculate(data0)
     assert result.risk_level == "Low"
 
     # 7-11: Slightly elevated (Need 7 pts)
     # age 55-64 (3) + BMI >=30 (3) + physical inactive (2) = 8 pts
-    data7 = EmployeeHealthData(
+    data7 = FindriscData(
         **{
             **base_data.__dict__,
             "age": 60,
@@ -103,7 +103,7 @@ def test_findrisc_risk_levels() -> None:
 
     # 12-14: Moderate (Need 12 pts)
     # age 55-64 (3) + BMI >=30 (3) + waist >=102 (4) + inactive (2) = 12 pts
-    data12 = EmployeeHealthData(
+    data12 = FindriscData(
         **{
             **base_data.__dict__,
             "age": 60,
@@ -117,15 +117,13 @@ def test_findrisc_risk_levels() -> None:
 
     # 15-20: High (Need 15 pts)
     # 12 pts + fam diabetes second degree (3) = 15 pts
-    data15 = EmployeeHealthData(
-        **{**data12.__dict__, "family_diabetes": "second_degree"}
-    )
+    data15 = FindriscData(**{**data12.__dict__, "family_diabetes": "second_degree"})
     result = calculator.calculate(data15)
     assert result.risk_level == "High"
 
     # 21-26: Very high (Need 21 pts)
     # 12 pts + previous high glucose (5) + first degree fam (5) = 22 pts
-    data22 = EmployeeHealthData(
+    data22 = FindriscData(
         **{
             **data12.__dict__,
             "previous_high_glucose": True,
@@ -139,7 +137,7 @@ def test_findrisc_risk_levels() -> None:
 def test_findrisc_edge_cases() -> None:
     calculator = FINDRISCCalculator()
     # Test BMI exactly 30, Waist exactly 102 (M), Waist exactly 88 (F)
-    data_m = EmployeeHealthData(
+    data_m = FindriscData(
         age=50,
         weight=86.7,
         height=1.70,
@@ -155,7 +153,7 @@ def test_findrisc_edge_cases() -> None:
     assert res_m.contributing_factors["bmi"] == 3  # ~30.0
     assert res_m.contributing_factors["waist"] == 4
 
-    data_f = EmployeeHealthData(
+    data_f = FindriscData(
         age=50,
         weight=86.7,
         height=1.70,

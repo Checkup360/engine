@@ -2,19 +2,19 @@
 
 from __future__ import annotations
 
-from app.domain.entities.employee_health_data import EmployeeHealthData
+from app.domain.entities.findrisc_data import FindriscData
 from app.domain.services.risk_score_calculator import RiskScoreCalculator
 from app.domain.value_objects.score_result import CalculationStatus, ScoreResult
 
 
-class FINDRISCCalculator(RiskScoreCalculator):
+class FINDRISCCalculator(RiskScoreCalculator[FindriscData]):
     """Calculates FINDRISC diabetes risk (Type 2)."""
 
     @property
     def score_id(self) -> str:
         return "findrisc"
 
-    def calculate(self, data: EmployeeHealthData) -> ScoreResult:
+    def calculate(self, data: FindriscData) -> ScoreResult:
         # 1. Validation
         if (
             data.age is None
