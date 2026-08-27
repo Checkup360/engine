@@ -33,18 +33,20 @@ El proyecto sigue estrictamente una **Arquitectura Hexagonal (Clean Architecture
    - **Núcleo puro**: Debe ser 100% Python estándar.
    - **Prohibido**: Importar librerías de infraestructura o presentación (e.g. `fastapi`, `pydantic`, `sqlalchemy`, `requests`).
    - Contiene:
-     - Entidades: `app/domain/entities/employee_health_data.py`
+     - Entidades específicas por score: `app/domain/entities/{score_name}_data.py`
      - Value Objects: `app/domain/value_objects/score_result.py`
-     - Interfaz de Calculadoras: `app/domain/services/risk_score_calculator.py`
+     - Interfaz Genérica de Calculadoras: `app/domain/services/risk_score_calculator.py`
      - Calculadoras concretas: `app/domain/calculators/{score_name}.py`
      - Servicios de dominio: `app/domain/services/scoring_engine.py`
      - Excepciones de dominio: `app/domain/exceptions.py`
 2. **Capa de Aplicación (`app/application/`)**:
-   - Orquesta los casos de uso y define los DTOs y comandos (`app/application/dto/`, `app/application/use_cases/`).
-   - Convierte comandos de aplicación en entidades de dominio y ejecuta los servicios de dominio.
+   - Orquesta los casos de uso del motor (`app/application/use_cases/`).
+   - Invoca los servicios de dominio pasando las entidades de dominio correspondientes.
 3. **Capa de Presentación (`app/presentation/`)**:
    - Adaptador primario/de entrada HTTP mediante FastAPI.
-   - Valida la entrada HTTP a través de modelos Pydantic (`app/presentation/api/request_models/`).
+   - Valida la entrada HTTP a través de modelos Pydantic específicos por score (`app/presentation/api/request_models/scores/{score_name}_request.py`).
+   - Transforma los datos validados directamente a la entidad de dominio (`to_domain()`).
+   - Mantiene el registro dinámico de modelos (`app/presentation/api/request_models/registry.py`).
    - Expone los endpoints (`app/presentation/api/routers/`) y gestiona la inyección de dependencias (`app/presentation/api/dependencies.py`).
 
 ---
@@ -73,11 +75,11 @@ Para evitar ambigüedades, inconsistencias clínicas y fallos silenciosos:
 
 ## 3. Implementación Obligatoria de la Interfaz de Riesgo (`RiskScoreCalculator`)
 
-Cada score de riesgo debe ser una clase concreta que implemente la interfaz base abstracta `RiskScoreCalculator` definida en `app/domain/services/risk_score_calculator.py`.
+Cada score de riesgo debe ser una clase concreta que implemente la interfaz genérica `RiskScoreCalculator[TData]` definida en `app/domain/services/risk_score_calculator.py`.
 
 ### Contrato de la Interfaz:
 ```python
-from app.domain.entities.employee_health_data import EmployeeHealthData
+from dataclasses import dataclass
 from app.domain.services.risk_score_calculator import RiskScoreCalculator
 from app.domain.value_objects.score_result import (
     CalculationStatus,
@@ -85,7 +87,13 @@ from app.domain.value_objects.score_result import (
 )
 
 
-class MyCustomScoreCalculator(RiskScoreCalculator):
+@dataclass(frozen=True)
+class MyCustomScoreData:
+    age: int | None = None
+    weight: float | None = None
+
+
+class MyCustomScoreCalculator(RiskScoreCalculator[MyCustomScoreData]):
     """Calculador de riesgo para [Nombre del Score]."""
 
     @property
@@ -93,7 +101,7 @@ class MyCustomScoreCalculator(RiskScoreCalculator):
         """Identificador único en formato snake_case."""
         return "my_custom_score"
 
-    def calculate(self, data: EmployeeHealthData) -> ScoreResult:
+    def calculate(self, data: MyCustomScoreData) -> ScoreResult:
         # 1. Validación de presencia de datos requeridos
         if data.age is None or data.weight is None:
             return ScoreResult(
@@ -131,11 +139,11 @@ class MyCustomScoreCalculator(RiskScoreCalculator):
 ## 4. Reglas de Diseño y Principios de Software
 
 1. **Stateless (Sin Estado)**:
-   - Las calculadoras deben ser completamente sin estado. El método `calculate` debe ser una función determinista y pura respecto a la instancia de `EmployeeHealthData`.
-2. **Inmutabilidad**:
-   - Las entidades y value objects (`EmployeeHealthData`, `ScoreResult`) deben mantenerse inmutables utilizando `@dataclass(frozen=True)`.
+   - Las calculadoras deben ser completamente sin estado. El método `calculate` debe ser una función determinista y pura respecto a su entidad clínica de datos.
+2. **Inmutabilidad y Aislamiento**:
+   - Las entidades y value objects (`FindriscData`, `StopBangData`, `ScoreResult`) deben mantenerse inmutables utilizando `@dataclass(frozen=True)`. No se comparten entidades monolíticas entre scores independientes.
 3. **Open/Closed Principle (OCP)**:
-   - Para añadir un nuevo score de riesgo, nunca se debe modificar el código interno de calculadoras existentes ni del `ScoringEngine`. Se crea una nueva clase `RiskScoreCalculator` y se inyecta en la lista de calculadoras activas.
+   - Para añadir un nuevo score de riesgo, nunca se debe modificar el código interno de calculadoras existentes ni del `ScoringEngine`. Se crea una nueva clase `RiskScoreCalculator`, su entidad de dominio, su request model, y se registra.
 4. **Single Responsibility Principle (SRP)**:
    - Cada calculadora solo es responsable de su propio algoritmo clínico y de mapear sus factores determinantes en `contributing_factors`.
 
@@ -147,15 +155,15 @@ Al agregar un nuevo score `X`, se deben tocar y verificar los siguientes archivo
 
 | Capa | Archivo | Responsabilidad |
 |---|---|---|
-| **Domain (Entidad)** | `app/domain/entities/employee_health_data.py` | Agregar nuevos campos de salud si el score requiere datos no contemplados previamente. |
-| **Domain (Calculador)** | `app/domain/calculators/{score_name}.py` | Implementar la clase que hereda de `RiskScoreCalculator`. |
-| **Domain (Excepciones)** | `app/domain/exceptions.py` | Definir excepciones especializadas si se requieren validaciones de dominio específicas. |
-| **Application (DTO)** | `app/application/dto/risk_score_dto.py` | Incluir los nuevos campos en `ComputeRiskScoreCommand` si aplica. |
-| **Application (Use Case)**| `app/application/use_cases/compute_risk_score.py` | Mapear los nuevos campos del comando hacia la entidad `EmployeeHealthData`. |
-| **Presentation (Request)**| `app/presentation/api/request_models/risk_score_request.py` | Agregar los campos con tipado estricto en el modelo Pydantic de entrada HTTP. |
+| **Domain (Entidad)** | `app/domain/entities/{score_name}_data.py` | Definir la entidad `@dataclass(frozen=True)` con los campos exclusivos del score. |
+| **Domain (Calculador)** | `app/domain/calculators/{score_name}.py` | Implementar `RiskScoreCalculator[{ScoreName}Data]`. |
+| **Domain (Excepciones)** | `app/domain/exceptions.py` | Definir excepciones de dominio específicas si aplican. |
+| **Presentation (Request)**| `app/presentation/api/request_models/scores/{score_name}_request.py` | Definir `{ScoreName}Request` (Pydantic) con validaciones y método `to_domain()`. |
+| **Presentation (Registry)**| `app/presentation/api/request_models/registry.py` | Registrar `{score_name}: {ScoreName}Request` en `SCORE_REQUEST_REGISTRY`. |
 | **Presentation (DI)** | `app/presentation/api/dependencies.py` | Instanciar el nuevo calculador dentro de `get_scoring_engine()`. |
 | **Documentation** | `docs/calculators/{score_name}.md` | Documentar la base clínica, fórmula, puntajes, factores y bibliografía del score. |
 | **Tests** | `tests/unit/domain/calculators/test_{score_name}.py` | Pruebas unitarias de: cálculo completo, datos faltantes (`NOT_CALCULABLE`), casos borde y validación de tipos erróneos. |
+| **Tests (Request)** | `tests/unit/presentation/test_score_requests.py` | Pruebas de validación y conversión `to_domain()`. |
 
 ---
 
