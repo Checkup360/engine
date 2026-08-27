@@ -1,6 +1,7 @@
-"""Unit tests for the ScoringEngine."""
+import pytest
 
 from app.domain.entities.employee_health_data import EmployeeHealthData
+from app.domain.exceptions import ScoreCalculatorNotFoundError
 from app.domain.services.risk_score_calculator import RiskScoreCalculator
 from app.domain.services.scoring_engine import ScoringEngine
 from app.domain.value_objects.score_result import CalculationStatus, ScoreResult
@@ -22,6 +23,30 @@ class MockCalculator(RiskScoreCalculator):
             status=CalculationStatus.CALCULATED,
             raw_value=42.0,
         )
+
+
+def test_scoring_engine_computes_single_score() -> None:
+    calc1 = MockCalculator("calc1")
+    calc2 = MockCalculator("calc2")
+    engine = ScoringEngine(calculators=[calc1, calc2])
+    data = EmployeeHealthData()
+
+    result = engine.compute_score("calc1", data)
+
+    assert result.score_id == "calc1"
+    assert result.raw_value == 42.0
+    assert result.status == CalculationStatus.CALCULATED
+
+
+def test_scoring_engine_raises_error_when_score_not_found() -> None:
+    calc1 = MockCalculator("calc1")
+    engine = ScoringEngine(calculators=[calc1])
+    data = EmployeeHealthData()
+
+    with pytest.raises(ScoreCalculatorNotFoundError) as exc_info:
+        engine.compute_score("unknown_score", data)
+
+    assert "unknown_score" in str(exc_info.value)
 
 
 def test_scoring_engine_computes_all_calculators() -> None:
