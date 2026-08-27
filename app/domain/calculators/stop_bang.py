@@ -1,9 +1,13 @@
-from app.domain.calculators.base import ScoreCalculator
+"""STOP-BANG (Sleep Apnea Screening) calculator."""
+
+from __future__ import annotations
+
 from app.domain.entities.employee_health_data import EmployeeHealthData
+from app.domain.services.risk_score_calculator import RiskScoreCalculator
 from app.domain.value_objects.score_result import CalculationStatus, ScoreResult
 
 
-class STOPBANGCalculator(ScoreCalculator):
+class STOPBANGCalculator(RiskScoreCalculator):
     """Calculates STOP-BANG risk for sleep apnea screening."""
 
     @property

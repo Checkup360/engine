@@ -1,4 +1,4 @@
-"""Base class for all score calculators."""
+"""Domain interface for risk score calculators."""
 
 from __future__ import annotations
 
@@ -8,9 +8,9 @@ from app.domain.entities.employee_health_data import EmployeeHealthData
 from app.domain.value_objects.score_result import ScoreResult
 
 
-class ScoreCalculator(abc.ABC):
+class RiskScoreCalculator(abc.ABC):
     """
-    Abstract base class that all calculators must implement.
+    Abstract base interface that all calculators must implement.
     Calculators must be stateless.
     """
 

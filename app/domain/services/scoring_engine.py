@@ -4,17 +4,17 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 
-from app.domain.calculators.base import ScoreCalculator
 from app.domain.entities.employee_health_data import EmployeeHealthData
+from app.domain.services.risk_score_calculator import RiskScoreCalculator
 from app.domain.value_objects.score_result import ScoreResult
 
 
 class ScoringEngine:
     """
-    Orchestrates the execution of multiple ScoreCalculators.
+    Orchestrates the execution of multiple RiskScoreCalculators.
     """
 
-    def __init__(self, calculators: Sequence[ScoreCalculator]) -> None:
+    def __init__(self, calculators: Sequence[RiskScoreCalculator]) -> None:
         """
         Initializes the engine with a list of calculators to execute.
         This allows injecting any combination of calculators without modifying

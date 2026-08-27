@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 
-from app.domain.calculators.base import ScoreCalculator
 from app.domain.entities.employee_health_data import EmployeeHealthData
+from app.domain.services.risk_score_calculator import RiskScoreCalculator
 from app.domain.value_objects.score_result import CalculationStatus, ScoreResult
 
 
-class FINDRISCCalculator(ScoreCalculator):
+class FINDRISCCalculator(RiskScoreCalculator):
     """Calculates FINDRISC diabetes risk (Type 2)."""
 
     @property
