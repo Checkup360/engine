@@ -21,7 +21,7 @@ def test_findrisc_request_to_domain() -> None:
         fruits_vegetables=True,
         hypertension_medication=False,
         previous_high_glucose=False,
-        family_diabetes="none",
+        family_diabetes="no",
     )
 
     data = req.to_domain()
@@ -36,7 +36,8 @@ def test_findrisc_request_to_domain() -> None:
     assert data.fruits_vegetables is True
     assert data.hypertension_medication is False
     assert data.previous_high_glucose is False
-    assert data.family_diabetes == "none"
+    assert data.family_diabetes == "no"
+
 
 
 def test_stop_bang_request_to_domain() -> None:

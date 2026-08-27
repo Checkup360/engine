@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Literal
+
 from pydantic import BaseModel, Field
 
 from app.domain.entities.findrisc_data import FindriscData
@@ -11,7 +13,7 @@ class FindriscRequest(BaseModel):
     """Payload for FINDRISC diabetes risk calculation."""
 
     age: int = Field(..., ge=0, le=130, description="Age in years")
-    sex: str = Field(..., description="Biological sex ('M' or 'F')")
+    sex: Literal["M", "F"] = Field(..., description="Biological sex ('M' or 'F')")
     weight: float = Field(..., gt=0, lt=500, description="Weight in kilograms")
     height: float = Field(..., gt=0, lt=3.0, description="Height in meters")
     waist_circumference: float = Field(
@@ -27,7 +29,7 @@ class FindriscRequest(BaseModel):
     previous_high_glucose: bool = Field(
         ..., description="Ever found to have high blood glucose"
     )
-    family_diabetes: str = Field(
+    family_diabetes: Literal["no", "second_degree", "first_degree"] = Field(
         ...,
         description=(
             "Family history of diabetes ('no', 'second_degree', 'first_degree')"
@@ -37,3 +39,4 @@ class FindriscRequest(BaseModel):
     def to_domain(self) -> FindriscData:
         """Converts HTTP request model directly into domain FindriscData entity."""
         return FindriscData(**self.model_dump())
+
