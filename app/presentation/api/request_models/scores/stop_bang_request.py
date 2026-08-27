@@ -35,4 +35,3 @@ class StopBangRequest(BaseModel):
     def to_domain(self) -> StopBangData:
         """Converts HTTP request model directly into domain StopBangData entity."""
         return StopBangData(**self.model_dump())
-

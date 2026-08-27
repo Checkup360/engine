@@ -118,4 +118,3 @@ def test_get_catalog_returns_200_and_available_scores() -> None:
     assert "age" in findrisc["required_fields"]
     assert "waist_circumference" in findrisc["required_fields"]
     assert "field_schema" in findrisc
-

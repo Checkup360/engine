@@ -30,7 +30,8 @@ router = APIRouter(prefix="/risk-scores", tags=["risk-scores"])
     summary="Get catalog of available risk scores and required fields",
 )
 def get_score_catalog() -> list[ScoreCatalogItemResponse]:
-    """Returns the list of available risk score calculators and their required parameters."""
+    """Returns the list of available risk score calculators
+    and their required parameters."""
     return get_catalog()
 
 
@@ -40,7 +41,6 @@ def get_score_catalog() -> list[ScoreCatalogItemResponse]:
     status_code=status.HTTP_200_OK,
     summary="Compute a specific health risk score from the provided parameters",
 )
-
 def compute_risk_score(
     score_id: Annotated[
         str, Path(description="The ID of the risk score model to evaluate")

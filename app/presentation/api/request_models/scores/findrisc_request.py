@@ -39,4 +39,3 @@ class FindriscRequest(BaseModel):
     def to_domain(self) -> FindriscData:
         """Converts HTTP request model directly into domain FindriscData entity."""
         return FindriscData(**self.model_dump())
-

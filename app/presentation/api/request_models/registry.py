@@ -64,4 +64,3 @@ def get_catalog() -> list[ScoreCatalogItemResponse]:
             )
         )
     return catalog
-

@@ -39,7 +39,6 @@ def test_findrisc_request_to_domain() -> None:
     assert data.family_diabetes == "no"
 
 
-
 def test_stop_bang_request_to_domain() -> None:
     req = StopBangRequest(
         snoring=True,
