@@ -4,13 +4,12 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from app.domain.value_objects.score_result import ScoreResult
-
 
 @dataclass(frozen=True)
 class ComputeRiskScoreCommand:
-    """Command to compute the risk score."""
+    """Command to compute a specific risk score."""
 
+    score_id: str
     age: int | None = None
     sex: str | None = None
     weight: float | None = None
@@ -30,15 +29,3 @@ class ComputeRiskScoreCommand:
     tired: bool | None = None
     observed_apnea: bool | None = None
     neck_circumference: float | None = None
-    target_scores: list[str] | None = None
-
-
-@dataclass(frozen=True)
-class RiskAssessmentDTO:
-    """
-    Application response for a risk assessment.
-    For now, it only contains the list of individual score results.
-    Later it will include the aggregated overall score.
-    """
-
-    scores: list[ScoreResult]

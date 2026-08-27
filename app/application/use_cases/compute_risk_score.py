@@ -2,25 +2,24 @@
 
 from __future__ import annotations
 
-from app.application.dto.risk_score_dto import (
-    ComputeRiskScoreCommand,
-    RiskAssessmentDTO,
-)
+from app.application.dto.risk_score_dto import ComputeRiskScoreCommand
 from app.domain.entities.employee_health_data import EmployeeHealthData
 from app.domain.services.scoring_engine import ScoringEngine
+from app.domain.value_objects.score_result import ScoreResult
 
 
 class ComputeRiskScoreUseCase:
     """
-    Orchestrates the risk scoring process.
+    Orchestrates the risk scoring process for a specific model.
     """
 
     def __init__(self, engine: ScoringEngine) -> None:
         self._engine = engine
 
-    def execute(self, command: ComputeRiskScoreCommand) -> RiskAssessmentDTO:
+    def execute(self, command: ComputeRiskScoreCommand) -> ScoreResult:
         """
-        Executes the scoring engine with the provided health data.
+        Executes the scoring engine for the requested score_id
+        with the provided health data.
         """
         # Map Command -> Domain Entity
         health_data = EmployeeHealthData(
@@ -46,9 +45,4 @@ class ComputeRiskScoreUseCase:
         )
 
         # Execute Domain Logic
-        results = self._engine.compute_scores(
-            health_data, target_scores=command.target_scores
-        )
-
-        # Return Application DTO
-        return RiskAssessmentDTO(scores=results)
+        return self._engine.compute_score(score_id=command.score_id, data=health_data)
