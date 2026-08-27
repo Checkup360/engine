@@ -19,12 +19,3 @@ class ScoreResultResponse(BaseModel):
     risk_level: str | None = None
     explanation: str | None = None
     contributing_factors: dict[str, float]
-
-
-class RiskAssessmentResponse(BaseModel):
-    """
-    Serialized form of the overall risk assessment.
-    Currently only returns the individual scores.
-    """
-
-    scores: list[ScoreResultResponse]

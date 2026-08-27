@@ -4,17 +4,39 @@ Engine is a production-grade occupational health platform focused on determinist
 
 ## API Usage
 
-The primary endpoint for calculating health risk scores is `/risk-scores`.
+The primary endpoint for calculating a health risk score is `POST /risk-scores/{score_id}`.
 
-### 1. Calculate All Scores
+### Calculate a Specific Risk Score
 
-To calculate all available risk scores (e.g., FINDRISC, STOP-BANG), send a `POST` request with the patient's health data. The scoring engine will automatically determine if it has enough data for each calculator.
+Send a `POST` request with the model identifier in the path (`findrisc`, `stop_bang`) along with the patient's health data in the JSON body. The score result for that specific model is returned directly.
 
-**Endpoint**: `POST /risk-scores`
+**Endpoint**: `POST /risk-scores/{score_id}`
+
+#### Example: Calculate STOP-BANG
 
 ```bash
 curl -X 'POST' \
-  'http://localhost:8000/risk-scores' \
+  'http://localhost:8000/risk-scores/stop_bang' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "age": 55,
+  "sex": "M",
+  "weight": 95,
+  "height": 1.75,
+  "snoring": true,
+  "tired": true,
+  "observed_apnea": false,
+  "hypertension_medication": true,
+  "neck_circumference": 43
+}'
+```
+
+#### Example: Calculate FINDRISC
+
+```bash
+curl -X 'POST' \
+  'http://localhost:8000/risk-scores/findrisc' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -27,52 +49,7 @@ curl -X 'POST' \
   "fruits_vegetables": false,
   "hypertension_medication": false,
   "previous_high_glucose": false,
-  "family_diabetes": "none",
-  "snoring": true,
-  "tired": true,
-  "observed_apnea": false,
-  "neck_circumference": 42
-}'
-```
-
-### 2. Calculate Specific Scores (Parameterized)
-
-If you only want to evaluate specific risk models (saving computation time), you can parameterize the request using the `target_scores` query parameter. You can provide this parameter multiple times for multiple scores.
-
-**Endpoint**: `POST /risk-scores?target_scores={score_id}`
-
-**Example: Calculate only STOP-BANG**
-
-```bash
-curl -X 'POST' \
-  'http://localhost:8000/risk-scores?target_scores=stop_bang' \
-  -H 'accept: application/json' \
-  -H 'Content-Type: application/json' \
-  -d '{
-  "age": 45,
-  "sex": "M",
-  "weight": 90,
-  "height": 1.75,
-  "snoring": true,
-  "tired": true,
-  "observed_apnea": false,
-  "hypertension_medication": false,
-  "neck_circumference": 42
-}'
-```
-
-**Example: Calculate FINDRISC and STOP-BANG explicitly**
-
-```bash
-curl -X 'POST' \
-  'http://localhost:8000/risk-scores?target_scores=findrisc&target_scores=stop_bang' \
-  -H 'accept: application/json' \
-  -H 'Content-Type: application/json' \
-  -d '{
-  "age": 45,
-  "sex": "M",
-  "weight": 90,
-  "height": 1.75
+  "family_diabetes": "none"
 }'
 ```
 

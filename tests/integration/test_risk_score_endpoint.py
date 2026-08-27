@@ -7,44 +7,61 @@ from app.presentation.main import app
 client = TestClient(app)
 
 
-def test_post_risk_score_returns_200_and_all_stubs_not_calculable() -> None:
+def test_post_findrisc_score_returns_200_and_single_score_result() -> None:
     payload = {
         "age": 45,
         "sex": "M",
         "weight": 90,
     }
 
-    response = client.post("/risk-scores", json=payload)
+    response = client.post("/risk-scores/findrisc", json=payload)
 
     assert response.status_code == 200
     data = response.json()
 
-    assert "scores" in data
-    scores = data["scores"]
-    assert len(scores) == 2
+    assert data["score_id"] == "findrisc"
+    assert data["score_name"] == "FINDRISC"
+    assert data["domain"] == "Diabetes"
+    assert data["status"] == "NOT_CALCULABLE"
+    assert "contributing_factors" in data
 
-    expected_score_ids = {
-        "findrisc",
-        "stop_bang",
+
+def test_post_stop_bang_score_returns_200_and_single_score_result() -> None:
+    payload = {
+        "age": 55,
+        "sex": "M",
+        "weight": 95,
+        "height": 1.75,
+        "snoring": True,
+        "tired": True,
+        "observed_apnea": False,
+        "hypertension_medication": True,
+        "neck_circumference": 43,
     }
 
-    actual_score_ids = {s["score_id"] for s in scores}
-    assert actual_score_ids == expected_score_ids
+    response = client.post("/risk-scores/stop_bang", json=payload)
 
-    for score in scores:
-        assert score["status"] == "NOT_CALCULABLE"
+    assert response.status_code == 200
+    data = response.json()
+
+    assert data["score_id"] == "stop_bang"
+    assert data["score_name"] == "STOP-BANG"
+    assert data["domain"] == "Sleep Apnea"
+    assert data["status"] == "CALCULATED"
+    assert data["raw_value"] is not None
+    assert data["risk_level"] is not None
+    assert "contributing_factors" in data
 
 
-def test_post_risk_scores_with_query_param_returns_only_requested() -> None:
+def test_post_unknown_score_returns_404() -> None:
     payload = {
         "age": 45,
         "sex": "M",
-        "weight": 90,
     }
 
-    response = client.post("/risk-scores?target_scores=findrisc", json=payload)
-    assert response.status_code == 200
+    response = client.post("/risk-scores/unknown_score", json=payload)
+
+    assert response.status_code == 404
     data = response.json()
-    assert "scores" in data
-    assert len(data["scores"]) == 1
-    assert data["scores"][0]["score_id"] == "findrisc"
+    assert "detail" in data
+    assert "unknown_score" in data["detail"]
