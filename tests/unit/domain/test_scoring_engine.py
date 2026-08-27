@@ -1,12 +1,12 @@
 """Unit tests for the ScoringEngine."""
 
-from app.domain.calculators.base import ScoreCalculator
 from app.domain.entities.employee_health_data import EmployeeHealthData
+from app.domain.services.risk_score_calculator import RiskScoreCalculator
 from app.domain.services.scoring_engine import ScoringEngine
 from app.domain.value_objects.score_result import CalculationStatus, ScoreResult
 
 
-class MockCalculator(ScoreCalculator):
+class MockCalculator(RiskScoreCalculator):
     def __init__(self, score_id_val: str) -> None:
         self._score_id = score_id_val
 
