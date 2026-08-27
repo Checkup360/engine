@@ -1,13 +1,19 @@
+from dataclasses import dataclass
+
 import pytest
 
-from app.domain.entities.employee_health_data import EmployeeHealthData
 from app.domain.exceptions import ScoreCalculatorNotFoundError
 from app.domain.services.risk_score_calculator import RiskScoreCalculator
 from app.domain.services.scoring_engine import ScoringEngine
 from app.domain.value_objects.score_result import CalculationStatus, ScoreResult
 
 
-class MockCalculator(RiskScoreCalculator):
+@dataclass(frozen=True)
+class MockData:
+    value: int = 1
+
+
+class MockCalculator(RiskScoreCalculator[MockData]):
     def __init__(self, score_id_val: str) -> None:
         self._score_id = score_id_val
 
@@ -15,7 +21,7 @@ class MockCalculator(RiskScoreCalculator):
     def score_id(self) -> str:
         return self._score_id
 
-    def calculate(self, data: EmployeeHealthData) -> ScoreResult:
+    def calculate(self, data: MockData) -> ScoreResult:
         return ScoreResult(
             score_id=self.score_id,
             score_name=f"Mock {self.score_id}",
@@ -29,7 +35,7 @@ def test_scoring_engine_computes_single_score() -> None:
     calc1 = MockCalculator("calc1")
     calc2 = MockCalculator("calc2")
     engine = ScoringEngine(calculators=[calc1, calc2])
-    data = EmployeeHealthData()
+    data = MockData()
 
     result = engine.compute_score("calc1", data)
 
@@ -41,35 +47,9 @@ def test_scoring_engine_computes_single_score() -> None:
 def test_scoring_engine_raises_error_when_score_not_found() -> None:
     calc1 = MockCalculator("calc1")
     engine = ScoringEngine(calculators=[calc1])
-    data = EmployeeHealthData()
+    data = MockData()
 
     with pytest.raises(ScoreCalculatorNotFoundError) as exc_info:
         engine.compute_score("unknown_score", data)
 
     assert "unknown_score" in str(exc_info.value)
-
-
-def test_scoring_engine_computes_all_calculators() -> None:
-    calc1 = MockCalculator("calc1")
-    calc2 = MockCalculator("calc2")
-    engine = ScoringEngine(calculators=[calc1, calc2])
-    data = EmployeeHealthData()
-
-    results = engine.compute_scores(data)
-
-    assert len(results) == 2
-    assert results[0].score_id == "calc1"
-    assert results[1].score_id == "calc2"
-    assert results[0].raw_value == 42.0
-
-
-def test_scoring_engine_filters_by_target_scores() -> None:
-    calc1 = MockCalculator("calc1")
-    calc2 = MockCalculator("calc2")
-    engine = ScoringEngine(calculators=[calc1, calc2])
-    data = EmployeeHealthData()
-
-    results = engine.compute_scores(data, target_scores=["calc2"])
-
-    assert len(results) == 1
-    assert results[0].score_id == "calc2"

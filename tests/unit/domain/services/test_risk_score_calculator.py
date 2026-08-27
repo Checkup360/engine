@@ -1,10 +1,9 @@
-"""Unit tests for RiskScoreCalculator interface in app/domain/services/."""
+from dataclasses import dataclass
 
 import pytest
 
 from app.domain.calculators.findrisc import FINDRISCCalculator
 from app.domain.calculators.stop_bang import STOPBANGCalculator
-from app.domain.entities.employee_health_data import EmployeeHealthData
 from app.domain.services.risk_score_calculator import RiskScoreCalculator
 from app.domain.value_objects.score_result import (
     CalculationStatus,
@@ -12,12 +11,17 @@ from app.domain.value_objects.score_result import (
 )
 
 
-class DummyCalculator(RiskScoreCalculator):
+@dataclass(frozen=True)
+class DummyData:
+    age: int | None = None
+
+
+class DummyCalculator(RiskScoreCalculator[DummyData]):
     @property
     def score_id(self) -> str:
         return "dummy_score"
 
-    def calculate(self, data: EmployeeHealthData) -> ScoreResult:
+    def calculate(self, data: DummyData) -> ScoreResult:
         if data.age is None:
             return ScoreResult(
                 score_id=self.score_id,
@@ -46,7 +50,7 @@ def test_dummy_calculator_implements_interface() -> None:
     assert isinstance(calc, RiskScoreCalculator)
     assert calc.score_id == "dummy_score"
 
-    res = calc.calculate(EmployeeHealthData(age=25))
+    res = calc.calculate(DummyData(age=25))
     assert isinstance(res, ScoreResult)
     assert res.status == CalculationStatus.CALCULATED
     assert res.raw_value == 50.0
