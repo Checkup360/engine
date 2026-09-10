@@ -1,6 +1,6 @@
 # Edmonton Obesity Staging System (EOSS)
 
-**Domain:** Obesity-related Health Impact  
+**Domain:** Obesity-related Health Impact
 **Score range:** Stage 0 to Stage 4
 
 EOSS is a clinical staging system. It should be assigned from a clinician's

@@ -1,7 +1,7 @@
 # Metabolic Syndrome
 
-**Domain:** Metabolic Health  
-**Score range:** 0 to 5 criteria  
+**Domain:** Metabolic Health
+**Score range:** 0 to 5 criteria
 **Rule:** Metabolic syndrome is present when at least 3 criteria are met.
 
 The calculator follows the five harmonized AHA/NHLBI criteria. Measurements use
