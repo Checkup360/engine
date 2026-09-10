@@ -1,5 +1,6 @@
 """Score Request Models."""
 
+from app.presentation.api.request_models.scores.eoss_request import EOSSRequest
 from app.presentation.api.request_models.scores.findrisc_request import (
     FindriscRequest,
 )
@@ -13,6 +14,7 @@ from app.presentation.api.request_models.scores.stop_bang_request import (
 
 __all__ = [
     "FindriscRequest",
+    "EOSSRequest",
     "MetabolicSyndromeRequest",
     "Phq9Request",
     "StopBangRequest",

@@ -6,6 +6,7 @@ from typing import Any, Protocol
 
 from pydantic import BaseModel
 
+from app.presentation.api.request_models.scores.eoss_request import EOSSRequest
 from app.presentation.api.request_models.scores.findrisc_request import (
     FindriscRequest,
 )
@@ -27,6 +28,7 @@ class ScoreRequestProtocol(Protocol):
 
 SCORE_REQUEST_REGISTRY: dict[str, type[BaseModel]] = {
     "findrisc": FindriscRequest,
+    "eoss": EOSSRequest,
     "metabolic_syndrome": MetabolicSyndromeRequest,
     "stop_bang": StopBangRequest,
     "phq9": Phq9Request,
@@ -34,6 +36,10 @@ SCORE_REQUEST_REGISTRY: dict[str, type[BaseModel]] = {
 
 SCORE_METADATA_REGISTRY: dict[str, dict[str, str]] = {
     "findrisc": {"score_name": "FINDRISC", "domain": "Diabetes"},
+    "eoss": {
+        "score_name": "EOSS",
+        "domain": "Obesity-related Health Impact",
+    },
     "metabolic_syndrome": {
         "score_name": "Metabolic Syndrome",
         "domain": "Metabolic Health",

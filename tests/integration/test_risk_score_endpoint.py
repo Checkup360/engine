@@ -151,6 +151,24 @@ def test_post_metabolic_syndrome_returns_200_and_criteria_result() -> None:
     assert data["attention_flags"]["metabolic_syndrome"] is True
 
 
+def test_post_eoss_returns_200_and_highest_stage() -> None:
+    response = client.post(
+        "/risk-scores/eoss",
+        json={
+            "physical_health_stage": 1,
+            "mental_health_stage": 2,
+            "functional_stage": 3,
+        },
+    )
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data["score_id"] == "eoss"
+    assert data["score_name"] == "EOSS"
+    assert data["raw_value"] == 3
+    assert data["risk_level"] == "Stage 3"
+
+
 def test_get_catalog_returns_200_and_available_scores() -> None:
     response = client.get("/risk-scores/catalog")
 

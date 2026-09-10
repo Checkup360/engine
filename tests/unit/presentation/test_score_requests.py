@@ -1,9 +1,11 @@
 """Unit tests for score-specific request models."""
 
+from app.domain.entities.eoss_data import EOSSData
 from app.domain.entities.findrisc_data import FindriscData
 from app.domain.entities.metabolic_syndrome_data import MetabolicSyndromeData
 from app.domain.entities.phq9_data import PHQ9_ITEM_FIELDS, Phq9Data
 from app.domain.entities.stop_bang_data import StopBangData
+from app.presentation.api.request_models.scores.eoss_request import EOSSRequest
 from app.presentation.api.request_models.scores.findrisc_request import (
     FindriscRequest,
 )
@@ -43,6 +45,17 @@ def test_findrisc_request_to_domain() -> None:
     assert data.hypertension_medication is False
     assert data.previous_high_glucose is False
     assert data.family_diabetes == "no"
+
+
+def test_eoss_request_to_domain() -> None:
+    data = EOSSRequest(
+        physical_health_stage=1,
+        mental_health_stage=2,
+        functional_stage=0,
+    ).to_domain()
+
+    assert isinstance(data, EOSSData)
+    assert data.mental_health_stage == 2
 
 
 def test_metabolic_syndrome_request_to_domain() -> None:

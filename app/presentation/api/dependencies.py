@@ -5,6 +5,7 @@ from __future__ import annotations
 from fastapi import Depends
 
 from app.application.use_cases.compute_risk_score import ComputeRiskScoreUseCase
+from app.domain.calculators.eoss import EOSSCalculator
 from app.domain.calculators.findrisc import FINDRISCCalculator
 from app.domain.calculators.metabolic_syndrome import MetabolicSyndromeCalculator
 from app.domain.calculators.phq9 import PHQ9Calculator
@@ -16,6 +17,7 @@ def get_scoring_engine() -> ScoringEngine:
     """Constructs the ScoringEngine with all available calculators."""
     calculators = [
         FINDRISCCalculator(),
+        EOSSCalculator(),
         MetabolicSyndromeCalculator(),
         STOPBANGCalculator(),
         PHQ9Calculator(),
