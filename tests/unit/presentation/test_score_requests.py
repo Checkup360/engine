@@ -1,10 +1,14 @@
 """Unit tests for score-specific request models."""
 
 from app.domain.entities.findrisc_data import FindriscData
+from app.domain.entities.metabolic_syndrome_data import MetabolicSyndromeData
 from app.domain.entities.phq9_data import PHQ9_ITEM_FIELDS, Phq9Data
 from app.domain.entities.stop_bang_data import StopBangData
 from app.presentation.api.request_models.scores.findrisc_request import (
     FindriscRequest,
+)
+from app.presentation.api.request_models.scores.metabolic_syndrome_request import (
+    MetabolicSyndromeRequest,
 )
 from app.presentation.api.request_models.scores.phq9_request import Phq9Request
 from app.presentation.api.request_models.scores.stop_bang_request import (
@@ -39,6 +43,26 @@ def test_findrisc_request_to_domain() -> None:
     assert data.hypertension_medication is False
     assert data.previous_high_glucose is False
     assert data.family_diabetes == "no"
+
+
+def test_metabolic_syndrome_request_to_domain() -> None:
+    req = MetabolicSyndromeRequest(
+        sex="M",
+        waist_circumference=105.0,
+        triglycerides=180.0,
+        hdl_cholesterol=38.0,
+        systolic_blood_pressure=128.0,
+        diastolic_blood_pressure=82.0,
+        hypertension_medication=False,
+        fasting_glucose=95.0,
+        glucose_lowering_medication=False,
+    )
+
+    data = req.to_domain()
+
+    assert isinstance(data, MetabolicSyndromeData)
+    assert data.waist_circumference == 105.0
+    assert data.hdl_cholesterol == 38.0
 
 
 def test_stop_bang_request_to_domain() -> None:

@@ -39,9 +39,7 @@ def test_phq9_calculates_minimal_profile() -> None:
 
 def test_phq9_calculates_max_severity() -> None:
     calculator = PHQ9Calculator()
-    result = calculator.calculate(
-        Phq9Data(**dict.fromkeys(PHQ9_ITEM_FIELDS, 3))
-    )
+    result = calculator.calculate(Phq9Data(**dict.fromkeys(PHQ9_ITEM_FIELDS, 3)))
 
     assert result.status == CalculationStatus.CALCULATED
     assert result.raw_value == 27
@@ -56,7 +54,12 @@ def test_phq9_severity_bands() -> None:
     calculator = PHQ9Calculator()
 
     res_4 = calculator.calculate(
-        _data_with_scores(little_interest=1, feeling_down=1, sleep_trouble=1, tired_energy=1)
+        _data_with_scores(
+            little_interest=1,
+            feeling_down=1,
+            sleep_trouble=1,
+            tired_energy=1,
+        )
     )
     assert res_4.raw_value == 4
     assert res_4.risk_level == "None / minimal"

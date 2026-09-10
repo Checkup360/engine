@@ -9,6 +9,9 @@ from pydantic import BaseModel
 from app.presentation.api.request_models.scores.findrisc_request import (
     FindriscRequest,
 )
+from app.presentation.api.request_models.scores.metabolic_syndrome_request import (
+    MetabolicSyndromeRequest,
+)
 from app.presentation.api.request_models.scores.phq9_request import Phq9Request
 from app.presentation.api.request_models.scores.stop_bang_request import (
     StopBangRequest,
@@ -24,12 +27,17 @@ class ScoreRequestProtocol(Protocol):
 
 SCORE_REQUEST_REGISTRY: dict[str, type[BaseModel]] = {
     "findrisc": FindriscRequest,
+    "metabolic_syndrome": MetabolicSyndromeRequest,
     "stop_bang": StopBangRequest,
     "phq9": Phq9Request,
 }
 
 SCORE_METADATA_REGISTRY: dict[str, dict[str, str]] = {
     "findrisc": {"score_name": "FINDRISC", "domain": "Diabetes"},
+    "metabolic_syndrome": {
+        "score_name": "Metabolic Syndrome",
+        "domain": "Metabolic Health",
+    },
     "stop_bang": {"score_name": "STOP-BANG", "domain": "Sleep Apnea"},
     "phq9": {"score_name": "PHQ-9", "domain": "Depression"},
 }

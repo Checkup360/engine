@@ -128,6 +128,29 @@ def test_post_phq9_score_returns_200_and_single_score_result() -> None:
     assert data["attention_flags"]["self_harm_thoughts"] is False
 
 
+def test_post_metabolic_syndrome_returns_200_and_criteria_result() -> None:
+    payload = {
+        "sex": "M",
+        "waist_circumference": 105.0,
+        "triglycerides": 180.0,
+        "hdl_cholesterol": 38.0,
+        "systolic_blood_pressure": 135.0,
+        "diastolic_blood_pressure": 85.0,
+        "hypertension_medication": False,
+        "fasting_glucose": 95.0,
+        "glucose_lowering_medication": False,
+    }
+
+    response = client.post("/risk-scores/metabolic_syndrome", json=payload)
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data["score_id"] == "metabolic_syndrome"
+    assert data["score_name"] == "Metabolic Syndrome"
+    assert data["raw_value"] == 4
+    assert data["attention_flags"]["metabolic_syndrome"] is True
+
+
 def test_get_catalog_returns_200_and_available_scores() -> None:
     response = client.get("/risk-scores/catalog")
 

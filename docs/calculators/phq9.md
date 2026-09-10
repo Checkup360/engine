@@ -1,7 +1,7 @@
 # PHQ-9 (Patient Health Questionnaire-9)
 
-**Domain:** Depression / Mood and emotional well-being  
-**Score Range:** 0 to 27 points  
+**Domain:** Depression / Mood and emotional well-being
+**Score Range:** 0 to 27 points
 **Instrument:** 9-item depression symptom questionnaire for the previous two weeks
 
 The PHQ-9 measures the severity of depressive symptoms. It is a symptom-severity
