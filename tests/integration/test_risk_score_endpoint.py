@@ -100,6 +100,34 @@ def test_post_invalid_payload_types_returns_422() -> None:
     assert "detail" in data
 
 
+def test_post_phq9_score_returns_200_and_single_score_result() -> None:
+    payload = {
+        "little_interest": 1,
+        "feeling_down": 1,
+        "sleep_trouble": 0,
+        "tired_energy": 2,
+        "appetite": 0,
+        "feeling_bad": 1,
+        "concentration": 0,
+        "psychomotor": 0,
+        "self_harm_thoughts": 0,
+    }
+
+    response = client.post("/risk-scores/phq9", json=payload)
+
+    assert response.status_code == 200
+    data = response.json()
+
+    assert data["score_id"] == "phq9"
+    assert data["score_name"] == "PHQ-9"
+    assert data["domain"] == "Depression"
+    assert data["status"] == "CALCULATED"
+    assert data["raw_value"] == 5
+    assert data["risk_level"] == "Mild"
+    assert data["contributing_factors"]["self_harm_flag"] == 0
+    assert data["attention_flags"]["self_harm_thoughts"] is False
+
+
 def test_get_catalog_returns_200_and_available_scores() -> None:
     response = client.get("/risk-scores/catalog")
 
@@ -111,6 +139,7 @@ def test_get_catalog_returns_200_and_available_scores() -> None:
     score_ids = [item["score_id"] for item in catalog]
     assert "findrisc" in score_ids
     assert "stop_bang" in score_ids
+    assert "phq9" in score_ids
 
     findrisc = next(item for item in catalog if item["score_id"] == "findrisc")
     assert findrisc["score_name"] == "FINDRISC"

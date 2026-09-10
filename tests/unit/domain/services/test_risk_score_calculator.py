@@ -3,6 +3,7 @@ from dataclasses import dataclass
 import pytest
 
 from app.domain.calculators.findrisc import FINDRISCCalculator
+from app.domain.calculators.phq9 import PHQ9Calculator
 from app.domain.calculators.stop_bang import STOPBANGCalculator
 from app.domain.services.risk_score_calculator import RiskScoreCalculator
 from app.domain.value_objects.score_result import (
@@ -67,3 +68,9 @@ def test_stop_bang_implements_risk_score_calculator() -> None:
     calc = STOPBANGCalculator()
     assert isinstance(calc, RiskScoreCalculator)
     assert calc.score_id == "stop_bang"
+
+
+def test_phq9_implements_risk_score_calculator() -> None:
+    calc = PHQ9Calculator()
+    assert isinstance(calc, RiskScoreCalculator)
+    assert calc.score_id == "phq9"

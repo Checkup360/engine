@@ -1,10 +1,12 @@
 """Unit tests for score-specific request models."""
 
 from app.domain.entities.findrisc_data import FindriscData
+from app.domain.entities.phq9_data import PHQ9_ITEM_FIELDS, Phq9Data
 from app.domain.entities.stop_bang_data import StopBangData
 from app.presentation.api.request_models.scores.findrisc_request import (
     FindriscRequest,
 )
+from app.presentation.api.request_models.scores.phq9_request import Phq9Request
 from app.presentation.api.request_models.scores.stop_bang_request import (
     StopBangRequest,
 )
@@ -77,6 +79,31 @@ def test_findrisc_request_raises_validation_error_on_missing_fields() -> None:
     missing_fields = {e["loc"][0] for e in errors}
     assert "sex" in missing_fields
     assert "weight" in missing_fields
+
+
+def test_phq9_request_to_domain() -> None:
+    payload = dict.fromkeys(PHQ9_ITEM_FIELDS, 1)
+    payload["self_harm_thoughts"] = 2
+    req = Phq9Request(**payload)
+
+    data = req.to_domain()
+
+    assert isinstance(data, Phq9Data)
+    assert data.little_interest == 1
+    assert data.self_harm_thoughts == 2
+
+
+def test_phq9_request_raises_validation_error_on_missing_fields() -> None:
+    import pytest
+    from pydantic import ValidationError
+
+    with pytest.raises(ValidationError) as exc_info:
+        Phq9Request.model_validate({"little_interest": 1})
+
+    errors = exc_info.value.errors()
+    missing_fields = {e["loc"][0] for e in errors}
+    assert "feeling_down" in missing_fields
+    assert "self_harm_thoughts" in missing_fields
 
 
 def test_stop_bang_request_raises_validation_error_on_missing_fields() -> None:

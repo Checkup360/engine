@@ -21,3 +21,4 @@ class ScoreResultResponse(BaseModel):
     risk_level: str | None = None
     explanation: str | None = None
     contributing_factors: dict[str, float]
+    attention_flags: dict[str, bool]

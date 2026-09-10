@@ -28,3 +28,4 @@ class ScoreResult:
     risk_level: str | None = None
     explanation: str | None = None
     contributing_factors: dict[str, float] = field(default_factory=dict)
+    attention_flags: dict[str, bool] = field(default_factory=dict)
