@@ -14,6 +14,7 @@ from app.presentation.api.request_models.scores.metabolic_syndrome_request impor
     MetabolicSyndromeRequest,
 )
 from app.presentation.api.request_models.scores.phq9_request import Phq9Request
+from app.presentation.api.request_models.scores.score2_request import Score2Request
 from app.presentation.api.request_models.scores.stop_bang_request import (
     StopBangRequest,
 )
@@ -32,6 +33,7 @@ SCORE_REQUEST_REGISTRY: dict[str, type[BaseModel]] = {
     "metabolic_syndrome": MetabolicSyndromeRequest,
     "stop_bang": StopBangRequest,
     "phq9": Phq9Request,
+    "score2": Score2Request,
 }
 
 SCORE_METADATA_REGISTRY: dict[str, dict[str, str]] = {
@@ -46,6 +48,7 @@ SCORE_METADATA_REGISTRY: dict[str, dict[str, str]] = {
     },
     "stop_bang": {"score_name": "STOP-BANG", "domain": "Sleep Apnea"},
     "phq9": {"score_name": "PHQ-9", "domain": "Depression"},
+    "score2": {"score_name": "SCORE2", "domain": "Cardiovascular"},
 }
 
 

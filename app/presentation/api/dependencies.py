@@ -9,6 +9,7 @@ from app.domain.calculators.eoss import EOSSCalculator
 from app.domain.calculators.findrisc import FINDRISCCalculator
 from app.domain.calculators.metabolic_syndrome import MetabolicSyndromeCalculator
 from app.domain.calculators.phq9 import PHQ9Calculator
+from app.domain.calculators.score2 import SCORE2Calculator
 from app.domain.calculators.stop_bang import STOPBANGCalculator
 from app.domain.services.scoring_engine import ScoringEngine
 
@@ -21,6 +22,7 @@ def get_scoring_engine() -> ScoringEngine:
         MetabolicSyndromeCalculator(),
         STOPBANGCalculator(),
         PHQ9Calculator(),
+        SCORE2Calculator(),
     ]
     return ScoringEngine(calculators=calculators)
 

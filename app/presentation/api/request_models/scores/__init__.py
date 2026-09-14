@@ -8,6 +8,7 @@ from app.presentation.api.request_models.scores.metabolic_syndrome_request impor
     MetabolicSyndromeRequest,
 )
 from app.presentation.api.request_models.scores.phq9_request import Phq9Request
+from app.presentation.api.request_models.scores.score2_request import Score2Request
 from app.presentation.api.request_models.scores.stop_bang_request import (
     StopBangRequest,
 )
@@ -17,5 +18,6 @@ __all__ = [
     "EOSSRequest",
     "MetabolicSyndromeRequest",
     "Phq9Request",
+    "Score2Request",
     "StopBangRequest",
 ]

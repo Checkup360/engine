@@ -169,6 +169,30 @@ def test_post_eoss_returns_200_and_highest_stage() -> None:
     assert data["risk_level"] == "Stage 3"
 
 
+def test_post_score2_returns_200_and_cardiovascular_result() -> None:
+    payload = {
+        "age": 60,
+        "sex": "M",
+        "smoker": False,
+        "systolic_blood_pressure": 120.0,
+        "total_cholesterol": 6.0,
+        "hdl_cholesterol": 1.3,
+        "risk_region": "moderate",
+    }
+
+    response = client.post("/risk-scores/score2", json=payload)
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data["score_id"] == "score2"
+    assert data["score_name"] == "SCORE2"
+    assert data["domain"] == "Cardiovascular"
+    assert data["status"] == "CALCULATED"
+    assert data["raw_value"] == 6.3
+    assert data["risk_level"] == "Moderate risk"
+    assert data["attention_flags"]["high_cardiovascular_risk"] is False
+
+
 def test_get_catalog_returns_200_and_available_scores() -> None:
     response = client.get("/risk-scores/catalog")
 
@@ -181,6 +205,7 @@ def test_get_catalog_returns_200_and_available_scores() -> None:
     assert "findrisc" in score_ids
     assert "stop_bang" in score_ids
     assert "phq9" in score_ids
+    assert "score2" in score_ids
 
     findrisc = next(item for item in catalog if item["score_id"] == "findrisc")
     assert findrisc["score_name"] == "FINDRISC"
