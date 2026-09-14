@@ -101,19 +101,17 @@ class FINDRISCCalculator(RiskScoreCalculator[FindriscData]):
         # Determine Risk Level
         risk_level = "Unknown"
         if 0 <= total_score <= 6:
-            risk_level = "Low"
+            risk_level = "Low risk"
         elif 7 <= total_score <= 11:
-            risk_level = "Slightly elevated"
+            risk_level = "Slightly elevated risk"
         elif 12 <= total_score <= 14:
-            risk_level = "Moderate"
+            risk_level = "Moderate risk"
         elif 15 <= total_score <= 20:
-            risk_level = "High"
+            risk_level = "High risk"
         elif 21 <= total_score <= 26:
-            risk_level = "Very high"
+            risk_level = "Very high risk"
 
-        normalized_value = round(
-            max(0.0, min(100.0, 100.0 - (total_score / 26.0) * 100.0)), 1
-        )
+        normalized_value = round(max(0.0, min(100.0, (total_score / 26.0) * 100.0)), 1)
 
         return ScoreResult(
             score_id="findrisc",

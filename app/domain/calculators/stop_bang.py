@@ -82,15 +82,13 @@ class STOPBANGCalculator(RiskScoreCalculator[StopBangData]):
         # Interpretation
         risk_level = "Unknown"
         if 0 <= total_score <= 2:
-            risk_level = "Low"
+            risk_level = "Low risk"
         elif 3 <= total_score <= 4:
-            risk_level = "Intermediate"
+            risk_level = "Moderate risk"
         elif 5 <= total_score <= 8:
-            risk_level = "High"
+            risk_level = "High risk"
 
-        normalized_value = round(
-            max(0.0, min(100.0, 100.0 - (total_score / 8.0) * 100.0)), 1
-        )
+        normalized_value = round(max(0.0, min(100.0, (total_score / 8.0) * 100.0)), 1)
 
         return ScoreResult(
             score_id="stop_bang",

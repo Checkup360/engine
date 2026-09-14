@@ -123,7 +123,7 @@ def test_post_phq9_score_returns_200_and_single_score_result() -> None:
     assert data["domain"] == "Depression"
     assert data["status"] == "CALCULATED"
     assert data["raw_value"] == 5
-    assert data["risk_level"] == "Mild"
+    assert data["risk_level"] == "Mild risk"
     assert data["contributing_factors"]["self_harm_flag"] == 0
     assert data["attention_flags"]["self_harm_thoughts"] is False
 
@@ -166,7 +166,7 @@ def test_post_eoss_returns_200_and_highest_stage() -> None:
     assert data["score_id"] == "eoss"
     assert data["score_name"] == "EOSS"
     assert data["raw_value"] == 3
-    assert data["risk_level"] == "Stage 3"
+    assert data["risk_level"] == "High risk"
 
 
 def test_post_score2_returns_200_and_cardiovascular_result() -> None:

@@ -29,7 +29,7 @@ def test_stop_bang_calculates_zero_risk_profile() -> None:
 
     assert result.status == CalculationStatus.CALCULATED
     assert result.raw_value == 0
-    assert result.risk_level == "Low"
+    assert result.risk_level == "Low risk"
     assert result.contributing_factors["snoring"] == 0
     assert result.contributing_factors["tired"] == 0
     assert result.contributing_factors["observed_apnea"] == 0
@@ -57,7 +57,7 @@ def test_stop_bang_calculates_max_risk_profile() -> None:
 
     assert result.status == CalculationStatus.CALCULATED
     assert result.raw_value == 8
-    assert result.risk_level == "High"
+    assert result.risk_level == "High risk"
     assert result.contributing_factors["snoring"] == 1
     assert result.contributing_factors["tired"] == 1
     assert result.contributing_factors["observed_apnea"] == 1
@@ -87,24 +87,24 @@ def test_stop_bang_risk_levels() -> None:
     data2 = StopBangData(**{**base_data.__dict__, "snoring": True, "sex": "M"})
     res2 = calculator.calculate(data2)
     assert res2.raw_value == 2
-    assert res2.risk_level == "Low"
+    assert res2.risk_level == "Low risk"
 
     # 3-4: Intermediate
     # 3 pts (snoring + male + tired)
     data3 = StopBangData(**{**data2.__dict__, "tired": True})
     res3 = calculator.calculate(data3)
     assert res3.raw_value == 3
-    assert res3.risk_level == "Intermediate"
+    assert res3.risk_level == "Moderate risk"
 
     # 4 pts (+ age > 50)
     data4 = StopBangData(**{**data3.__dict__, "age": 55})
     res4 = calculator.calculate(data4)
     assert res4.raw_value == 4
-    assert res4.risk_level == "Intermediate"
+    assert res4.risk_level == "Moderate risk"
 
     # 5-8: High
     # 5 pts (+ neck > 40)
     data5 = StopBangData(**{**data4.__dict__, "neck_circumference": 42.0})
     res5 = calculator.calculate(data5)
     assert res5.raw_value == 5
-    assert res5.risk_level == "High"
+    assert res5.risk_level == "High risk"

@@ -33,8 +33,8 @@ def test_metabolic_syndrome_calculates_zero_criteria() -> None:
 
     assert result.status == CalculationStatus.CALCULATED
     assert result.raw_value == 0
-    assert result.normalized_value == 100.0
-    assert result.risk_level == "Criteria threshold not met"
+    assert result.normalized_value == 0.0
+    assert result.risk_level == "Low risk"
     assert result.attention_flags["metabolic_syndrome"] is False
 
 
@@ -48,6 +48,7 @@ def test_metabolic_syndrome_requires_three_criteria() -> None:
     )
 
     assert result.raw_value == 2
+    assert result.risk_level == "Moderate risk"
     assert result.attention_flags["waist_elevated"] is True
     assert result.attention_flags["triglycerides_elevated"] is True
     assert result.attention_flags["hdl_low"] is False
@@ -64,7 +65,7 @@ def test_metabolic_syndrome_counts_treatment_as_criteria() -> None:
     )
 
     assert result.raw_value == 3
-    assert result.risk_level == "Metabolic syndrome present"
+    assert result.risk_level == "High risk"
     assert result.attention_flags["metabolic_syndrome"] is True
     assert result.explanation is not None
 

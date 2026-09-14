@@ -30,8 +30,8 @@ def test_phq9_calculates_minimal_profile() -> None:
 
     assert result.status == CalculationStatus.CALCULATED
     assert result.raw_value == 0
-    assert result.risk_level == "None / minimal"
-    assert result.normalized_value == 100.0
+    assert result.risk_level == "Low risk"
+    assert result.normalized_value == 0.0
     assert result.contributing_factors["self_harm_flag"] == 0
     assert result.attention_flags["self_harm_thoughts"] is False
     assert result.explanation is None
@@ -43,8 +43,8 @@ def test_phq9_calculates_max_severity() -> None:
 
     assert result.status == CalculationStatus.CALCULATED
     assert result.raw_value == 27
-    assert result.risk_level == "Severe"
-    assert result.normalized_value == 0.0
+    assert result.risk_level == "Very high risk"
+    assert result.normalized_value == 100.0
     assert result.contributing_factors["self_harm_flag"] == 1
     assert result.attention_flags["self_harm_thoughts"] is True
     assert result.explanation is not None
@@ -62,7 +62,7 @@ def test_phq9_severity_bands() -> None:
         )
     )
     assert res_4.raw_value == 4
-    assert res_4.risk_level == "None / minimal"
+    assert res_4.risk_level == "Low risk"
 
     res_5 = calculator.calculate(
         _data_with_scores(
@@ -74,7 +74,7 @@ def test_phq9_severity_bands() -> None:
         )
     )
     assert res_5.raw_value == 5
-    assert res_5.risk_level == "Mild"
+    assert res_5.risk_level == "Mild risk"
 
     res_10 = calculator.calculate(
         Phq9Data(
@@ -90,7 +90,7 @@ def test_phq9_severity_bands() -> None:
         )
     )
     assert res_10.raw_value == 10
-    assert res_10.risk_level == "Moderate"
+    assert res_10.risk_level == "Moderate risk"
 
     res_15 = calculator.calculate(
         Phq9Data(
@@ -106,7 +106,7 @@ def test_phq9_severity_bands() -> None:
         )
     )
     assert res_15.raw_value == 15
-    assert res_15.risk_level == "Moderately severe"
+    assert res_15.risk_level == "High risk"
 
     res_20 = calculator.calculate(
         Phq9Data(
@@ -122,7 +122,7 @@ def test_phq9_severity_bands() -> None:
         )
     )
     assert res_20.raw_value == 20
-    assert res_20.risk_level == "Severe"
+    assert res_20.risk_level == "Very high risk"
 
 
 def test_phq9_question_nine_flag_independent_of_total() -> None:
@@ -130,7 +130,7 @@ def test_phq9_question_nine_flag_independent_of_total() -> None:
     result = calculator.calculate(_data_with_scores(self_harm_thoughts=1))
 
     assert result.raw_value == 1
-    assert result.risk_level == "None / minimal"
+    assert result.risk_level == "Low risk"
     assert result.contributing_factors["self_harm_thoughts"] == 1
     assert result.contributing_factors["self_harm_flag"] == 1
     assert result.explanation is not None

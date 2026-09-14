@@ -44,15 +44,27 @@ class EOSSCalculator(RiskScoreCalculator[EOSSData]):
             name: value for name, value in stages.items() if value is not None
         }
         stage = max(valid_stages.values())
+
+        if stage == 0:
+            risk_level = "Low risk"
+        elif stage == 1:
+            risk_level = "Slightly elevated risk"
+        elif stage == 2:
+            risk_level = "Moderate risk"
+        elif stage == 3:
+            risk_level = "High risk"
+        else:
+            risk_level = "Very high risk"
+
         return ScoreResult(
             score_id="eoss",
             score_name="EOSS",
             domain="Obesity-related Health Impact",
             status=CalculationStatus.CALCULATED,
             raw_value=stage,
-            normalized_value=round(100.0 - (stage / 4.0) * 100.0, 1),
-            risk_level=f"Stage {stage}",
-            explanation=_STAGE_LABELS[stage],
+            normalized_value=round((stage / 4.0) * 100.0, 1),
+            risk_level=risk_level,
+            explanation=f"Stage {stage}: {_STAGE_LABELS[stage]}",
             contributing_factors={
                 **{name: float(value) for name, value in valid_stages.items()},
                 "highest_stage": float(stage),

@@ -134,10 +134,8 @@ class SCORE2Calculator(RiskScoreCalculator[Score2Data]):
 
         raw_value = round(calibrated_risk * 100.0, 1)
 
-        # Normalized value (0 to 100, where 100 is optimal/zero risk, 0 is max risk)
-        normalized_value = round(
-            max(0.0, min(100.0, 100.0 - (raw_value / 30.0) * 100.0)), 1
-        )
+        # Normalized value (0 to 100, where 0 is lowest risk, 100 is max risk)
+        normalized_value = round(max(0.0, min(100.0, (raw_value / 30.0) * 100.0)), 1)
 
         if raw_value < 5.0:
             risk_level = "Low risk"

@@ -51,7 +51,7 @@ def test_score2_calculates_male_baseline_moderate_region() -> None:
     assert result.score_name == "SCORE2"
     assert result.domain == "Cardiovascular"
     assert result.raw_value == 6.3
-    assert result.normalized_value == 79.0
+    assert result.normalized_value == 21.0
     assert result.risk_level == "Moderate risk"
     assert result.attention_flags["high_cardiovascular_risk"] is False
     assert result.attention_flags["smoker"] is False

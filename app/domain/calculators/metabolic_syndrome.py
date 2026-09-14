@@ -60,23 +60,30 @@ class MetabolicSyndromeCalculator(RiskScoreCalculator[MetabolicSyndromeData]):
         criteria_met = sum(criteria.values())
         metabolic_syndrome = criteria_met >= _METABOLIC_SYNDROME_THRESHOLD
 
+        if metabolic_syndrome:
+            risk_level = "High risk"
+            explanation = (
+                f"Metabolic syndrome present ({criteria_met} of 5 criteria met)."
+            )
+        elif criteria_met == 2:
+            risk_level = "Moderate risk"
+            explanation = f"Moderate metabolic risk ({criteria_met} of 5 criteria met)."
+        elif criteria_met == 1:
+            risk_level = "Low risk"
+            explanation = f"Low metabolic risk ({criteria_met} of 5 criteria met)."
+        else:
+            risk_level = "Low risk"
+            explanation = "Optimal metabolic health (no criteria met)."
+
         return ScoreResult(
             score_id="metabolic_syndrome",
             score_name="Metabolic Syndrome",
             domain="Metabolic Health",
             status=CalculationStatus.CALCULATED,
             raw_value=criteria_met,
-            normalized_value=round(100.0 - (criteria_met / 5.0) * 100.0, 1),
-            risk_level=(
-                "Metabolic syndrome present"
-                if metabolic_syndrome
-                else "Criteria threshold not met"
-            ),
-            explanation=(
-                "At least three of five metabolic syndrome criteria are present."
-                if metabolic_syndrome
-                else None
-            ),
+            normalized_value=round((criteria_met / 5.0) * 100.0, 1),
+            risk_level=risk_level,
+            explanation=explanation,
             contributing_factors={
                 **{name: float(value) for name, value in criteria.items()},
                 "criteria_met": float(criteria_met),

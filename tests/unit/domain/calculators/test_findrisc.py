@@ -32,7 +32,7 @@ def test_findrisc_calculates_zero_risk_profile() -> None:
 
     assert result.status == CalculationStatus.CALCULATED
     assert result.raw_value == 0
-    assert result.risk_level == "Low"
+    assert result.risk_level == "Low risk"
     assert result.contributing_factors["age"] == 0
     assert result.contributing_factors["bmi"] == 0
     assert result.contributing_factors["waist"] == 0
@@ -57,7 +57,7 @@ def test_findrisc_calculates_high_risk_profile() -> None:
 
     assert result.status == CalculationStatus.CALCULATED
     assert result.raw_value == 26
-    assert result.risk_level == "Very high"
+    assert result.risk_level == "Very high risk"
     assert result.contributing_factors["age"] == 4
     assert result.contributing_factors["bmi"] == 3
     assert result.contributing_factors["waist"] == 4
@@ -86,7 +86,7 @@ def test_findrisc_risk_levels() -> None:
     # 0 pts total
     data0 = FindriscData(**{**base_data.__dict__, "age": 40})
     result = calculator.calculate(data0)
-    assert result.risk_level == "Low"
+    assert result.risk_level == "Low risk"
 
     # 7-11: Slightly elevated (Need 7 pts)
     # age 55-64 (3) + BMI >=30 (3) + physical inactive (2) = 8 pts
@@ -99,7 +99,7 @@ def test_findrisc_risk_levels() -> None:
         }
     )
     result = calculator.calculate(data7)
-    assert result.risk_level == "Slightly elevated"
+    assert result.risk_level == "Slightly elevated risk"
 
     # 12-14: Moderate (Need 12 pts)
     # age 55-64 (3) + BMI >=30 (3) + waist >=102 (4) + inactive (2) = 12 pts
@@ -113,13 +113,13 @@ def test_findrisc_risk_levels() -> None:
         }
     )
     result = calculator.calculate(data12)
-    assert result.risk_level == "Moderate"
+    assert result.risk_level == "Moderate risk"
 
     # 15-20: High (Need 15 pts)
     # 12 pts + fam diabetes second degree (3) = 15 pts
     data15 = FindriscData(**{**data12.__dict__, "family_diabetes": "second_degree"})
     result = calculator.calculate(data15)
-    assert result.risk_level == "High"
+    assert result.risk_level == "High risk"
 
     # 21-26: Very high (Need 21 pts)
     # 12 pts + previous high glucose (5) + first degree fam (5) = 22 pts
@@ -131,7 +131,7 @@ def test_findrisc_risk_levels() -> None:
         }
     )
     result = calculator.calculate(data22)
-    assert result.risk_level == "Very high"
+    assert result.risk_level == "Very high risk"
 
 
 def test_findrisc_edge_cases() -> None:

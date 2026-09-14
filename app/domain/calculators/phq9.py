@@ -20,14 +20,14 @@ _MAX_RAW_SCORE = 27.0
 
 def _severity_for_total(total: int) -> str:
     if total <= 4:
-        return "None / minimal"
+        return "Low risk"
     if total <= 9:
-        return "Mild"
+        return "Mild risk"
     if total <= 14:
-        return "Moderate"
+        return "Moderate risk"
     if total <= 19:
-        return "Moderately severe"
-    return "Severe"
+        return "High risk"
+    return "Very high risk"
 
 
 class PHQ9Calculator(RiskScoreCalculator[Phq9Data]):
@@ -63,7 +63,7 @@ class PHQ9Calculator(RiskScoreCalculator[Phq9Data]):
             )
 
         normalized_value = round(
-            max(0.0, min(100.0, 100.0 - (total_score / _MAX_RAW_SCORE) * 100.0)),
+            max(0.0, min(100.0, (total_score / _MAX_RAW_SCORE) * 100.0)),
             1,
         )
 

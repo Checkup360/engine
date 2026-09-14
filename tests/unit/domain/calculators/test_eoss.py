@@ -19,8 +19,8 @@ def test_eoss_returns_highest_domain_stage() -> None:
 
     assert result.status == CalculationStatus.CALCULATED
     assert result.raw_value == 3
-    assert result.normalized_value == 25.0
-    assert result.risk_level == "Stage 3"
+    assert result.normalized_value == 75.0
+    assert result.risk_level == "High risk"
     assert result.attention_flags["stage_2_or_higher"] is True
     assert result.attention_flags["stage_3_or_higher"] is True
     assert result.attention_flags["stage_4"] is False
@@ -32,8 +32,9 @@ def test_eoss_stage_zero_is_lowest_impact() -> None:
     )
 
     assert result.raw_value == 0
-    assert result.normalized_value == 100.0
-    assert result.explanation == "No risk factors or impairment"
+    assert result.normalized_value == 0.0
+    assert result.risk_level == "Low risk"
+    assert result.explanation == "Stage 0: No risk factors or impairment"
     assert result.attention_flags["stage_2_or_higher"] is False
 
 
