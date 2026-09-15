@@ -1,42 +1,103 @@
-# Engine - Risk Scoring Engine
+# Checkup360 Engine (Risk Scoring Engine)
 
-Engine is a production-grade occupational health platform focused on deterministic health scoring. It follows Clean/Hexagonal Architecture to decouple business rules from infrastructure and presentation frameworks.
+Deterministic health risk calculation microservice for **Checkup360**, built with **FastAPI** and managed via **uv**.
+
+The engine computes clinically validated risk scores (such as FINDRISC and STOP-BANG) based on patient anthropometrics, lifestyle habits, and medical history.
+
+---
+
+## Architecture
+
+The scoring engine strictly enforces **Hexagonal Architecture (Ports and Adapters)**:
+
+- **Domain (`app/domain`):** Entities, Value Objects, and the pure Python `ScoringEngine`. Completely decoupled from web frameworks and external libraries (no FastAPI, Pydantic, or DB imports).
+- **Application (`app/application`):** Use cases and internal DTOs orchestrating scoring logic.
+- **Infrastructure (`app/infrastructure`):** External adapters, serialization, and configurations.
+- **Presentation (`app/presentation`):** FastAPI controllers, HTTP request/response schemas, and dependency injection.
+
+---
+
+## Prerequisites
+
+- **Python**: `>=3.12`
+- **uv** (Astral): Fast Python package and virtual environment manager.
+
+Install `uv` if not already installed:
+
+```bash
+curl -Ls https://astral.sh/uv/install.sh | sh
+```
+
+---
+
+## Getting Started
+
+### 1. Setup Environment
+
+```bash
+cd engine
+uv venv
+uv sync
+```
+
+### 2. Environment Variables
+
+Copy the example environment file and configure settings as needed (documented in `.env.example`):
+
+```bash
+cp .env.example .env
+```
+
+---
+
+## Running the Development Server
+
+Start the local dev server using the provided `Makefile`:
+
+```bash
+make dev
+```
+
+*(Or directly: `uv run fastapi dev app/presentation/main.py --port 8001`)*
+
+The service will run at:
+`http://localhost:8001`
+- **Interactive Swagger UI:** `http://localhost:8001/docs`
+- **ReDoc Documentation:** `http://localhost:8001/redoc`
+
+---
+
+## Testing and Quality Assurance
+
+```bash
+# Run pytest with code coverage
+make test
+
+# Lint codebase (Ruff)
+make lint
+
+# Format code (Ruff)
+make format
+
+# Run full pre-commit pipeline (format + lint + test)
+make pre-commit
+```
+
+---
 
 ## API Usage
 
-The primary endpoint for calculating a health risk score is `POST /risk-scores/{score_id}`.
+The main endpoint to compute health scores is `POST /risk-scores/{score_id}`.
 
-### Calculate a Specific Risk Score
+### Available Risk Models (`score_id`):
+- `findrisc`: 10-year risk assessment for Type 2 Diabetes Mellitus (Finnish Diabetes Risk Score).
+- `stop_bang`: STOP-BANG screening questionnaire for Obstructive Sleep Apnea (OSA) risk.
 
-Send a `POST` request with the model identifier in the path (`findrisc`, `stop_bang`) along with the patient's health data in the JSON body. The score result for that specific model is returned directly.
-
-**Endpoint**: `POST /risk-scores/{score_id}`
-
-#### Example: Calculate STOP-BANG
+### Example 1: Compute FINDRISC Score
 
 ```bash
 curl -X 'POST' \
-  'http://localhost:8000/risk-scores/stop_bang' \
-  -H 'accept: application/json' \
-  -H 'Content-Type: application/json' \
-  -d '{
-  "age": 55,
-  "sex": "M",
-  "weight": 95,
-  "height": 1.75,
-  "snoring": true,
-  "tired": true,
-  "observed_apnea": false,
-  "hypertension_medication": true,
-  "neck_circumference": 43
-}'
-```
-
-#### Example: Calculate FINDRISC
-
-```bash
-curl -X 'POST' \
-  'http://localhost:8000/risk-scores/findrisc' \
+  'http://localhost:8001/risk-scores/findrisc' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -53,16 +114,28 @@ curl -X 'POST' \
 }'
 ```
 
-### Available Score IDs
-- `findrisc`: FINDRISC diabetes risk (Type 2).
-- `stop_bang`: STOP-BANG risk for sleep apnea screening.
+### Example 2: Compute STOP-BANG Score
 
-## Architecture
+```bash
+curl -X 'POST' \
+  'http://localhost:8001/risk-scores/stop_bang' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "age": 55,
+  "sex": "M",
+  "weight": 95,
+  "height": 1.75,
+  "snoring": true,
+  "tired": true,
+  "observed_apnea": false,
+  "hypertension_medication": true,
+  "neck_circumference": 43
+}'
+```
 
-This project strictly adheres to Hexagonal Architecture (Ports and Adapters):
-- **Domain**: Contains Entities, Value Objects, and the pure Python `ScoringEngine`.
-- **Application**: Contains Use Cases and DTOs that orchestrate the domain.
-- **Infrastructure**: Adapters for databases, email, etc.
-- **Presentation**: FastAPI controllers, dependency injection, and HTTP models.
+---
 
-Business logic is strictly isolated in the Domain layer and never leaks into Presentation or Infrastructure.
+## Releases
+
+Tagging a commit with a semantic version (e.g., `git tag v0.1.0 && git push origin v0.1.0`) automatically triggers the GitHub Actions workflow to build and publish the container image to GitHub Container Registry (GHCR).
