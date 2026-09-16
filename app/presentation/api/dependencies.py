@@ -5,10 +5,13 @@ from __future__ import annotations
 from fastapi import Depends
 
 from app.application.use_cases.compute_risk_score import ComputeRiskScoreUseCase
+from app.domain.calculators.audit_c import AuditCCalculator
 from app.domain.calculators.eoss import EOSSCalculator
 from app.domain.calculators.findrisc import FINDRISCCalculator
 from app.domain.calculators.metabolic_syndrome import MetabolicSyndromeCalculator
+from app.domain.calculators.nordic_nmq import NordicNMQCalculator
 from app.domain.calculators.phq9 import PHQ9Calculator
+from app.domain.calculators.pss10 import PSS10Calculator
 from app.domain.calculators.score2 import SCORE2Calculator
 from app.domain.calculators.stop_bang import STOPBANGCalculator
 from app.domain.services.scoring_engine import ScoringEngine
@@ -23,6 +26,9 @@ def get_scoring_engine() -> ScoringEngine:
         STOPBANGCalculator(),
         PHQ9Calculator(),
         SCORE2Calculator(),
+        NordicNMQCalculator(),
+        AuditCCalculator(),
+        PSS10Calculator(),
     ]
     return ScoringEngine(calculators=calculators)
 
