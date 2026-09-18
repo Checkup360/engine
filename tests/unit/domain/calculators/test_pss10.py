@@ -44,7 +44,8 @@ def test_bdd_pss10_item_reversal_logic_q4_q5_q7_q8() -> None:
 
 def test_bdd_pss10_optimal_zero_stress_profile() -> None:
     """
-    Given: An operator answers '0' to direct items and '4' to reversed items (which invert to 0).
+    Given: An operator answers '0' to direct items and '4' to reversed
+           items (which invert to 0).
     When: The PSS-10 calculator executes.
     Then: Total score MUST be 0/40 with 'Low risk' and 0.0 normalized score.
     """
@@ -76,9 +77,11 @@ def test_bdd_pss10_optimal_zero_stress_profile() -> None:
 
 def test_bdd_pss10_high_risk_severe_stress_burnout() -> None:
     """
-    Given: An operator answers '3' or '4' across questions resulting in a score >= 27.
+    Given: An operator answers '3' or '4' across questions resulting
+           in a score >= 27.
     When: The PSS-10 calculator executes.
-    Then: The risk level MUST be 'High risk' with severe_stress_or_burnout flag set to True.
+    Then: The risk level MUST be 'High risk' with
+          severe_stress_or_burnout flag set to True.
     """
     # Given
     data = Pss10Data(
