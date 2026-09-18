@@ -32,7 +32,9 @@ class PSS10Calculator(RiskScoreCalculator[Pss10Data]):
                     score_name="PSS-10 Perceived Stress Scale",
                     domain="Psychological Health",
                     status=CalculationStatus.NOT_CALCULABLE,
-                    explanation=f"Missing or invalid response for PSS-10 item: {field_name}",
+                    explanation=(
+                        f"Missing or invalid response for PSS-10 item: {field_name}"
+                    ),
                 )
 
             # Mathematical item reversal for questions 4, 5, 7, 8 (4 - value)
@@ -47,14 +49,18 @@ class PSS10Calculator(RiskScoreCalculator[Pss10Data]):
         if total_score <= 13:
             risk_level = "Low risk"
             explanation = f"Low perceived stress (Score {total_score}/40)."
-            normalized_value = round((total_score / 13) * 20.0, 1) if total_score > 0 else 0.0
+            normalized_value = (
+                round((total_score / 13) * 20.0, 1) if total_score > 0 else 0.0
+            )
         elif total_score <= 26:
             risk_level = "Moderate risk"
             explanation = f"Moderate perceived stress (Score {total_score}/40)."
             normalized_value = round(21.0 + ((total_score - 14) / 12.0) * 29.0, 1)
         else:
             risk_level = "High risk"
-            explanation = f"Severe perceived stress / burnout risk (Score {total_score}/40)."
+            explanation = (
+                f"Severe perceived stress / burnout risk (Score {total_score}/40)."
+            )
             normalized_value = round(51.0 + ((total_score - 27) / 13.0) * 49.0, 1)
 
         return ScoreResult(

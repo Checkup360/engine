@@ -43,10 +43,13 @@ class AuditCCalculator(RiskScoreCalculator[AuditCData]):
         if total_score < cutoff:
             normalized_value = round((total_score / cutoff) * 50.0, 1)
         else:
-            normalized_value = round(51.0 + ((total_score - cutoff) / (12 - cutoff)) * 49.0, 1)
+            normalized_value = round(
+                51.0 + ((total_score - cutoff) / (12 - cutoff)) * 49.0, 1
+            )
 
         explanation = (
-            f"AUDIT-C score is {total_score}/12 ({risk_level} for {sex} threshold of {cutoff})."
+            f"AUDIT-C score is {total_score}/12 "
+            f"({risk_level} for {sex} threshold of {cutoff})."
         )
 
         factors = {

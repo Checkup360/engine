@@ -7,9 +7,11 @@ from app.domain.value_objects.score_result import CalculationStatus
 
 def test_bdd_audit_c_gender_cutoff_score_3_is_low_risk_for_males() -> None:
     """
-    Given: A male operator with an AUDIT-C total score of 3 (frequency=1, quantity=1, heavy_drinking=1).
+    Given: A male operator with an AUDIT-C total score of 3
+           (frequency=1, quantity=1, heavy_drinking=1).
     When: The AUDIT-C calculator executes with sex='M'.
-    Then: The risk level MUST be 'Low risk' (positive_screening = False) because male threshold is >= 4.
+    Then: The risk level MUST be 'Low risk' (positive_screening = False)
+          because male threshold is >= 4.
     """
     # Given
     data = AuditCData(frequency=1, quantity=1, heavy_drinking=1, sex="M")
@@ -28,9 +30,11 @@ def test_bdd_audit_c_gender_cutoff_score_3_is_low_risk_for_males() -> None:
 
 def test_bdd_audit_c_gender_cutoff_score_3_is_high_risk_for_females() -> None:
     """
-    Given: A female operator with an AUDIT-C total score of 3 (frequency=1, quantity=1, heavy_drinking=1).
+    Given: A female operator with an AUDIT-C total score of 3
+           (frequency=1, quantity=1, heavy_drinking=1).
     When: The AUDIT-C calculator executes with sex='F'.
-    Then: The risk level MUST be 'High risk' (positive_screening = True) because female threshold is >= 3.
+    Then: The risk level MUST be 'High risk' (positive_screening = True)
+          because female threshold is >= 3.
     """
     # Given
     data = AuditCData(frequency=1, quantity=1, heavy_drinking=1, sex="F")
@@ -49,7 +53,8 @@ def test_bdd_audit_c_gender_cutoff_score_3_is_high_risk_for_females() -> None:
 
 def test_bdd_audit_c_male_score_4_triggers_high_risk() -> None:
     """
-    Given: A male operator with an AUDIT-C total score of 4 (frequency=2, quantity=1, heavy_drinking=1).
+    Given: A male operator with an AUDIT-C total score of 4
+           (frequency=2, quantity=1, heavy_drinking=1).
     When: The AUDIT-C calculator executes with sex='M'.
     Then: The risk level MUST be 'High risk' (positive_screening = True).
     """

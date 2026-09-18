@@ -62,7 +62,10 @@ SCORE_METADATA_REGISTRY: dict[str, dict[str, str]] = {
         "domain": "Ergonomics",
     },
     "audit_c": {"score_name": "AUDIT-C Alcohol Risk", "domain": "Alcohol Use"},
-    "pss10": {"score_name": "PSS-10 Perceived Stress Scale", "domain": "Psychological Health"},
+    "pss10": {
+        "score_name": "PSS-10 Perceived Stress Scale",
+        "domain": "Psychological Health",
+    },
 }
 
 
