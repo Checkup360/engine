@@ -6,6 +6,7 @@ from typing import Any, Protocol
 
 from pydantic import BaseModel
 
+from app.presentation.api.request_models.scores.audit_c_request import AuditCRequest
 from app.presentation.api.request_models.scores.eoss_request import EOSSRequest
 from app.presentation.api.request_models.scores.findrisc_request import (
     FindriscRequest,
@@ -13,7 +14,11 @@ from app.presentation.api.request_models.scores.findrisc_request import (
 from app.presentation.api.request_models.scores.metabolic_syndrome_request import (
     MetabolicSyndromeRequest,
 )
+from app.presentation.api.request_models.scores.nordic_nmq_request import (
+    NordicNmqRequest,
+)
 from app.presentation.api.request_models.scores.phq9_request import Phq9Request
+from app.presentation.api.request_models.scores.pss10_request import Pss10Request
 from app.presentation.api.request_models.scores.score2_request import Score2Request
 from app.presentation.api.request_models.scores.stop_bang_request import (
     StopBangRequest,
@@ -34,6 +39,9 @@ SCORE_REQUEST_REGISTRY: dict[str, type[BaseModel]] = {
     "stop_bang": StopBangRequest,
     "phq9": Phq9Request,
     "score2": Score2Request,
+    "nordic_nmq": NordicNmqRequest,
+    "audit_c": AuditCRequest,
+    "pss10": Pss10Request,
 }
 
 SCORE_METADATA_REGISTRY: dict[str, dict[str, str]] = {
@@ -49,6 +57,12 @@ SCORE_METADATA_REGISTRY: dict[str, dict[str, str]] = {
     "stop_bang": {"score_name": "STOP-BANG", "domain": "Sleep Apnea"},
     "phq9": {"score_name": "PHQ-9", "domain": "Depression"},
     "score2": {"score_name": "SCORE2", "domain": "Cardiovascular"},
+    "nordic_nmq": {
+        "score_name": "Standardized Nordic Questionnaire (NMQ)",
+        "domain": "Ergonomics",
+    },
+    "audit_c": {"score_name": "AUDIT-C Alcohol Risk", "domain": "Alcohol Use"},
+    "pss10": {"score_name": "PSS-10 Perceived Stress Scale", "domain": "Psychological Health"},
 }
 
 
