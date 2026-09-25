@@ -2,11 +2,10 @@
 
 from __future__ import annotations
 
-from typing import Literal
-
 from pydantic import BaseModel, Field
 
 from app.domain.entities.audit_c_data import AuditCData
+from app.presentation.api.request_models.scores._shared import Sex
 
 
 class AuditCRequest(BaseModel):
@@ -21,14 +20,12 @@ class AuditCRequest(BaseModel):
     heavy_drinking: int = Field(
         ..., ge=0, le=4, description="Frequency of 6+ drinks on one occasion (0-4)"
     )
-    sex: Literal["M", "F", "m", "f"] = Field(
-        ..., description="Biological sex ('M' or 'F')"
-    )
+    sex: Sex = Field(..., description="Biological sex ('M' or 'F')")
 
     def to_domain(self) -> AuditCData:
         return AuditCData(
             frequency=self.frequency,
             quantity=self.quantity,
             heavy_drinking=self.heavy_drinking,
-            sex=self.sex.upper(),
+            sex=self.sex,
         )

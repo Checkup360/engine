@@ -7,13 +7,14 @@ from typing import Literal
 from pydantic import BaseModel, Field
 
 from app.domain.entities.score2_data import Score2Data
+from app.presentation.api.request_models.scores._shared import Sex
 
 
 class Score2Request(BaseModel):
     """Payload for calculating SCORE2 cardiovascular risk."""
 
     age: int = Field(..., ge=18, le=120, description="Age in years")
-    sex: Literal["M", "F"] = Field(..., description="Biological sex ('M' or 'F')")
+    sex: Sex = Field(..., description="Biological sex ('M' or 'F')")
     smoker: bool = Field(..., description="Current smoking status")
     systolic_blood_pressure: float = Field(
         ..., gt=0, lt=400, description="Systolic blood pressure in mmHg"

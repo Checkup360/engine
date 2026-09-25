@@ -7,13 +7,14 @@ from typing import Literal
 from pydantic import BaseModel, Field
 
 from app.domain.entities.findrisc_data import FindriscData
+from app.presentation.api.request_models.scores._shared import Sex
 
 
 class FindriscRequest(BaseModel):
     """Payload for FINDRISC diabetes risk calculation."""
 
     age: int = Field(..., ge=0, le=130, description="Age in years")
-    sex: Literal["M", "F"] = Field(..., description="Biological sex ('M' or 'F')")
+    sex: Sex = Field(..., description="Biological sex ('M' or 'F')")
     weight: float = Field(..., gt=0, lt=500, description="Weight in kilograms")
     height: float = Field(..., gt=0, lt=3.0, description="Height in meters")
     waist_circumference: float = Field(

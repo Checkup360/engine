@@ -2,17 +2,16 @@
 
 from __future__ import annotations
 
-from typing import Literal
-
 from pydantic import BaseModel, Field
 
 from app.domain.entities.metabolic_syndrome_data import MetabolicSyndromeData
+from app.presentation.api.request_models.scores._shared import Sex
 
 
 class MetabolicSyndromeRequest(BaseModel):
     """Payload for calculating the five metabolic syndrome criteria."""
 
-    sex: Literal["M", "F"] = Field(..., description="Biological sex ('M' or 'F')")
+    sex: Sex = Field(..., description="Biological sex ('M' or 'F')")
     waist_circumference: float = Field(..., gt=0, lt=300, description="Waist in cm")
     triglycerides: float = Field(
         ..., ge=0, lt=10000, description="Triglycerides in mg/dL"

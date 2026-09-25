@@ -2,11 +2,10 @@
 
 from __future__ import annotations
 
-from typing import Literal
-
 from pydantic import BaseModel, Field
 
 from app.domain.entities.stop_bang_data import StopBangData
+from app.presentation.api.request_models.scores._shared import Sex
 
 
 class StopBangRequest(BaseModel):
@@ -30,7 +29,7 @@ class StopBangRequest(BaseModel):
     neck_circumference: float = Field(
         ..., gt=0, lt=100, description="Neck circumference in cm"
     )
-    sex: Literal["M", "F"] = Field(..., description="Biological sex ('M' or 'F')")
+    sex: Sex = Field(..., description="Biological sex ('M' or 'F')")
 
     def to_domain(self) -> StopBangData:
         """Converts HTTP request model directly into domain StopBangData entity."""

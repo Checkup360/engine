@@ -213,3 +213,22 @@ def test_get_catalog_returns_200_and_available_scores() -> None:
     assert "age" in findrisc["required_fields"]
     assert "waist_circumference" in findrisc["required_fields"]
     assert "field_schema" in findrisc
+
+
+def test_post_score_with_lowercase_sex_returns_200() -> None:
+    payload = {
+        "age": 45,
+        "sex": "m",
+        "weight": 90.0,
+        "height": 1.80,
+        "waist_circumference": 96.0,
+        "daily_physical_activity": True,
+        "fruits_vegetables": True,
+        "hypertension_medication": False,
+        "previous_high_glucose": False,
+        "family_diabetes": "no",
+    }
+
+    response = client.post("/risk-scores/findrisc", json=payload)
+    assert response.status_code == 200
+    assert response.json()["status"] == "CALCULATED"
