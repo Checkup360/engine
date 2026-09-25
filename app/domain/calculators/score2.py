@@ -43,6 +43,10 @@ _REGIONAL_SCALES: dict[str, dict[str, tuple[float, float]]] = {
 # Conversion factor from mg/dL to mmol/L for cholesterol
 _MG_DL_TO_MMOL_L = 38.67
 
+# 10-year CVD risk ≥30% is treated as maximum severity for the 0-100 UI scale;
+# SCORE2's own risk bands already classify >=20% as "Very high risk".
+_NORMALIZATION_RISK_CEILING_PERCENT = 30.0
+
 
 def _to_mmol_l(val: float, mg_dl_threshold: float) -> float:
     """Converts cholesterol from mg/dL to mmol/L if value exceeds threshold."""
@@ -135,7 +139,13 @@ class SCORE2Calculator(RiskScoreCalculator[Score2Data]):
         raw_value = round(calibrated_risk * 100.0, 1)
 
         # Normalized value (0 to 100, where 0 is lowest risk, 100 is max risk)
-        normalized_value = round(max(0.0, min(100.0, (raw_value / 30.0) * 100.0)), 1)
+        normalized_value = round(
+            max(
+                0.0,
+                min(100.0, (raw_value / _NORMALIZATION_RISK_CEILING_PERCENT) * 100.0),
+            ),
+            1,
+        )
 
         if raw_value < 5.0:
             risk_level = "Low risk"

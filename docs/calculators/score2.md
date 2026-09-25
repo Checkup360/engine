@@ -59,6 +59,14 @@ $$\text{calibrated\_risk} = 1 - \exp(-\exp(\text{scale1} + \text{scale2} \times 
 | **High** | 0.3207 | 0.9360 | 0.5710 | 0.9369 |
 | **Very high** | 0.5836 | 0.8294 | 0.9412 | 0.8329 |
 
+### 5. Normalized Value (0–100 Scale)
+
+For cross-score visualization in the Checkup360 UI, the calibrated risk percentage (`raw_value`) is mapped to a 0–100 severity scale:
+$$\text{normalized\_value} = \min\left(100.0, \frac{\text{raw\_value}}{30.0} \times 100.0\right)$$
+
+* **Normalization Ceiling (`_NORMALIZATION_RISK_CEILING_PERCENT = 30.0`):** A 10-year CVD risk $\ge 30\%$ represents maximum severity ($100$) on the unified scale. SCORE2's clinical risk bands already classify risk $\ge 20\%$ as "Very high risk".
+* **Raw Value:** Remains un-capped to preserve the exact calibrated risk percentage.
+
 ---
 
 ## Risk Interpretation
