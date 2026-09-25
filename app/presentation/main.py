@@ -6,10 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import ValidationError
 
-from app.domain.exceptions import (
-    InvalidHealthDataError,
-    ScoreCalculatorNotFoundError,
-)
+from app.domain.exceptions import ScoreCalculatorNotFoundError
 from app.presentation.api.routers import risk_score, version
 
 load_dotenv()
@@ -33,16 +30,6 @@ def score_calculator_not_found_handler(
 ) -> JSONResponse:
     return JSONResponse(
         status_code=status.HTTP_404_NOT_FOUND,
-        content={"detail": str(exc)},
-    )
-
-
-@app.exception_handler(InvalidHealthDataError)
-def invalid_health_data_handler(
-    request: Request, exc: InvalidHealthDataError
-) -> JSONResponse:
-    return JSONResponse(
-        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
         content={"detail": str(exc)},
     )
 
