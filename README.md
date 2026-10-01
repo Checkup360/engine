@@ -89,6 +89,11 @@ make pre-commit
 
 The main endpoint to compute health scores is `POST /risk-scores/{score_id}`.
 
+**Score direction:** every response exposes `health_index`, a 0–100 value where
+**higher means healthier**. Calculators internally express clinical severity as
+`risk_value` (higher is riskier); the inversion happens only in
+`ScoreResult.health_index`. `risk_value` is never exposed by the API.
+
 ### Available Risk Models (`score_id`):
 - `findrisc`: 10-year risk assessment for Type 2 Diabetes Mellitus (Finnish Diabetes Risk Score).
 - `stop_bang`: STOP-BANG screening questionnaire for Obstructive Sleep Apnea (OSA) risk.
