@@ -64,7 +64,7 @@ def test_health_index_inverts_risk_value(
         score_name="Sample Score",
         domain="Cardiovascular",
         status=CalculationStatus.CALCULATED,
-        normalized_value=risk_value,
+        risk_value=risk_value,
     )
     assert res.health_index == expected_health_index
 

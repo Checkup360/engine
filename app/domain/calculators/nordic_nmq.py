@@ -76,21 +76,21 @@ class NordicNMQCalculator(RiskScoreCalculator[NordicNmqData]):
         # 3. Low Risk (Green): Q2 and Q3 all False.
         if has_work_impediment:
             risk_level = "High risk"
-            normalized_value = 100.0
+            risk_value = 100.0
             explanation = (
                 "High ergonomic risk: Work impediment reported in "
                 "one or more anatomical zones."
             )
         elif has_recent_7day_pain:
             risk_level = "Moderate risk"
-            normalized_value = 50.0
+            risk_value = 50.0
             explanation = (
                 "Moderate ergonomic risk: Recent pain reported in "
                 "last 7 days without work impediment."
             )
         else:
             risk_level = "Low risk"
-            normalized_value = 0.0
+            risk_value = 0.0
             explanation = (
                 "Low ergonomic risk: No recent pain or work impediment reported."
             )
@@ -101,7 +101,7 @@ class NordicNMQCalculator(RiskScoreCalculator[NordicNmqData]):
             domain="Ergonomics",
             status=CalculationStatus.CALCULATED,
             raw_value=float(total_positive_responses),
-            normalized_value=normalized_value,
+            risk_value=risk_value,
             risk_level=risk_level,
             explanation=explanation,
             contributing_factors=factors,

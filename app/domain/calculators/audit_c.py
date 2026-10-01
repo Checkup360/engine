@@ -41,9 +41,9 @@ class AuditCCalculator(RiskScoreCalculator[AuditCData]):
 
         risk_level = "High risk" if is_positive else "Low risk"
         if total_score < cutoff:
-            normalized_value = round((total_score / cutoff) * 50.0, 1)
+            risk_value = round((total_score / cutoff) * 50.0, 1)
         else:
-            normalized_value = round(
+            risk_value = round(
                 51.0 + ((total_score - cutoff) / (12 - cutoff)) * 49.0, 1
             )
 
@@ -65,7 +65,7 @@ class AuditCCalculator(RiskScoreCalculator[AuditCData]):
             domain="Alcohol Use",
             status=CalculationStatus.CALCULATED,
             raw_value=float(total_score),
-            normalized_value=normalized_value,
+            risk_value=risk_value,
             risk_level=risk_level,
             explanation=explanation,
             contributing_factors=factors,

@@ -31,7 +31,7 @@ def test_phq9_calculates_minimal_profile() -> None:
     assert result.status == CalculationStatus.CALCULATED
     assert result.raw_value == 0
     assert result.risk_level == "Low risk"
-    assert result.normalized_value == 0.0
+    assert result.risk_value == 0.0
     assert result.contributing_factors["self_harm_flag"] == 0
     assert result.attention_flags["self_harm_thoughts"] is False
     assert result.explanation is None
@@ -44,7 +44,7 @@ def test_phq9_calculates_max_severity() -> None:
     assert result.status == CalculationStatus.CALCULATED
     assert result.raw_value == 27
     assert result.risk_level == "Very high risk"
-    assert result.normalized_value == 100.0
+    assert result.risk_value == 100.0
     assert result.contributing_factors["self_harm_flag"] == 1
     assert result.attention_flags["self_harm_thoughts"] is True
     assert result.explanation is not None

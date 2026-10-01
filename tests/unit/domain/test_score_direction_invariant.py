@@ -230,9 +230,9 @@ def test_score_risk_direction_invariant(
     assert result_best.status == CalculationStatus.CALCULATED
     assert result_worst.status == CalculationStatus.CALCULATED
 
-    assert result_best.normalized_value is not None
-    assert result_worst.normalized_value is not None
+    assert result_best.risk_value is not None
+    assert result_worst.risk_value is not None
 
-    assert result_best.normalized_value < 15.0
-    assert result_worst.normalized_value > 85.0
-    assert result_worst.normalized_value > result_best.normalized_value
+    assert result_best.risk_value < 15.0
+    assert result_worst.risk_value > 85.0
+    assert result_worst.risk_value > result_best.risk_value

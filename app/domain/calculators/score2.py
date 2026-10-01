@@ -139,7 +139,7 @@ class SCORE2Calculator(RiskScoreCalculator[Score2Data]):
         raw_value = round(calibrated_risk * 100.0, 1)
 
         # Normalized value (0 to 100, where 0 is lowest risk, 100 is max risk)
-        normalized_value = round(
+        risk_value = round(
             max(
                 0.0,
                 min(100.0, (raw_value / _NORMALIZATION_RISK_CEILING_PERCENT) * 100.0),
@@ -184,7 +184,7 @@ class SCORE2Calculator(RiskScoreCalculator[Score2Data]):
             domain="Cardiovascular",
             status=CalculationStatus.CALCULATED,
             raw_value=raw_value,
-            normalized_value=normalized_value,
+            risk_value=risk_value,
             risk_level=risk_level,
             explanation=explanation,
             contributing_factors=contributing_factors,
