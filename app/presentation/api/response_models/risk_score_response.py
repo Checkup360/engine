@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 from app.domain.value_objects.score_result import CalculationStatus
 
@@ -17,7 +17,10 @@ class ScoreResultResponse(BaseModel):
     domain: str
     status: CalculationStatus
     raw_value: float | None = None
-    normalized_value: float | None = None
+    health_index: float | None = Field(
+        default=None,
+        description="Health index from 0 to 100 where higher means healthier.",
+    )
     risk_level: str | None = None
     explanation: str | None = None
     contributing_factors: dict[str, float]

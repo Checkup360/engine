@@ -48,7 +48,7 @@ def test_bdd_nmq_high_risk_when_work_prevented_in_any_zone() -> None:
     # Then
     assert result.status == CalculationStatus.CALCULATED
     assert result.risk_level == "High risk"
-    assert result.normalized_value == 100.0
+    assert result.risk_value == 100.0
     assert result.attention_flags["has_work_impediment"] is True
 
 
@@ -75,7 +75,7 @@ def test_bdd_nmq_moderate_risk_when_recent_pain_without_work_impediment() -> Non
     # Then
     assert result.status == CalculationStatus.CALCULATED
     assert result.risk_level == "Moderate risk"
-    assert result.normalized_value == 50.0
+    assert result.risk_value == 50.0
     assert result.attention_flags["has_work_impediment"] is False
     assert result.attention_flags["has_recent_7day_pain"] is True
 
@@ -103,7 +103,7 @@ def test_bdd_nmq_low_risk_when_12month_pain_only_without_recent_pain() -> None:
     # Then
     assert result.status == CalculationStatus.CALCULATED
     assert result.risk_level == "Low risk"
-    assert result.normalized_value == 0.0
+    assert result.risk_value == 0.0
     assert result.attention_flags["has_work_impediment"] is False
     assert result.attention_flags["has_recent_7day_pain"] is False
     assert result.attention_flags["has_12month_pain"] is True

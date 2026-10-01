@@ -111,7 +111,7 @@ class FINDRISCCalculator(RiskScoreCalculator[FindriscData]):
         elif 21 <= total_score <= 26:
             risk_level = "Very high risk"
 
-        normalized_value = round(max(0.0, min(100.0, (total_score / 26.0) * 100.0)), 1)
+        risk_value = round(max(0.0, min(100.0, (total_score / 26.0) * 100.0)), 1)
 
         return ScoreResult(
             score_id="findrisc",
@@ -119,7 +119,7 @@ class FINDRISCCalculator(RiskScoreCalculator[FindriscData]):
             domain="Diabetes",
             status=CalculationStatus.CALCULATED,
             raw_value=total_score,
-            normalized_value=normalized_value,
+            risk_value=risk_value,
             risk_level=risk_level,
             contributing_factors=factors,
         )

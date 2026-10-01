@@ -49,19 +49,17 @@ class PSS10Calculator(RiskScoreCalculator[Pss10Data]):
         if total_score <= 13:
             risk_level = "Low risk"
             explanation = f"Low perceived stress (Score {total_score}/40)."
-            normalized_value = (
-                round((total_score / 13) * 20.0, 1) if total_score > 0 else 0.0
-            )
+            risk_value = round((total_score / 13) * 20.0, 1) if total_score > 0 else 0.0
         elif total_score <= 26:
             risk_level = "Moderate risk"
             explanation = f"Moderate perceived stress (Score {total_score}/40)."
-            normalized_value = round(21.0 + ((total_score - 14) / 12.0) * 29.0, 1)
+            risk_value = round(21.0 + ((total_score - 14) / 12.0) * 29.0, 1)
         else:
             risk_level = "High risk"
             explanation = (
                 f"Severe perceived stress / burnout risk (Score {total_score}/40)."
             )
-            normalized_value = round(51.0 + ((total_score - 27) / 13.0) * 49.0, 1)
+            risk_value = round(51.0 + ((total_score - 27) / 13.0) * 49.0, 1)
 
         return ScoreResult(
             score_id="pss10",
@@ -69,7 +67,7 @@ class PSS10Calculator(RiskScoreCalculator[Pss10Data]):
             domain="Psychological Health",
             status=CalculationStatus.CALCULATED,
             raw_value=float(total_score),
-            normalized_value=normalized_value,
+            risk_value=risk_value,
             risk_level=risk_level,
             explanation=explanation,
             contributing_factors=factors,

@@ -1,4 +1,4 @@
-"""Cross-score invariant test verifying risk direction across all 9 calculators."""
+"""Cross-score invariant: health index direction across all 9 calculators."""
 
 from __future__ import annotations
 
@@ -220,9 +220,9 @@ def test_score_risk_direction_invariant(
     best_case_data: Any,
     worst_case_data: Any,
 ) -> None:
-    """Verifies that for all 9 calculators, worst clinical case yields high
-    normalized risk, best case yields low normalized risk, and directional
-    monotonicity is preserved.
+    """Verifies that for all 9 calculators, the best clinical case yields a
+    high health index, the worst case yields a low health index, and
+    directional monotonicity is preserved (higher = healthier).
     """
     result_best = calculator.calculate(best_case_data)
     result_worst = calculator.calculate(worst_case_data)
@@ -230,9 +230,9 @@ def test_score_risk_direction_invariant(
     assert result_best.status == CalculationStatus.CALCULATED
     assert result_worst.status == CalculationStatus.CALCULATED
 
-    assert result_best.normalized_value is not None
-    assert result_worst.normalized_value is not None
+    assert result_best.health_index is not None
+    assert result_worst.health_index is not None
 
-    assert result_best.normalized_value < 15.0
-    assert result_worst.normalized_value > 85.0
-    assert result_worst.normalized_value > result_best.normalized_value
+    assert result_best.health_index > 85.0
+    assert result_worst.health_index < 15.0
+    assert result_best.health_index > result_worst.health_index

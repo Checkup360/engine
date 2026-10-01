@@ -62,7 +62,7 @@ class EOSSCalculator(RiskScoreCalculator[EOSSData]):
             domain="Obesity-related Health Impact",
             status=CalculationStatus.CALCULATED,
             raw_value=stage,
-            normalized_value=round((stage / 4.0) * 100.0, 1),
+            risk_value=round((stage / 4.0) * 100.0, 1),
             risk_level=risk_level,
             explanation=f"Stage {stage}: {_STAGE_LABELS[stage]}",
             contributing_factors={

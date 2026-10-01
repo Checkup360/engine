@@ -31,6 +31,9 @@ def test_post_findrisc_score_returns_200_and_single_score_result() -> None:
     assert data["domain"] == "Diabetes"
     assert data["status"] == "CALCULATED"
     assert data["raw_value"] is not None
+    assert 0.0 <= data["health_index"] <= 100.0
+    assert "risk_value" not in data
+    assert "normalized_value" not in data
     assert "contributing_factors" in data
 
 

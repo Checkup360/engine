@@ -39,7 +39,7 @@ def test_bdd_pss10_item_reversal_logic_q4_q5_q7_q8() -> None:
     assert result.contributing_factors["pss10_q8"] == 4.0
     assert result.raw_value == 16.0
     assert result.risk_level == "Moderate risk"
-    assert result.normalized_value == 25.8
+    assert result.risk_value == 25.8
 
 
 def test_bdd_pss10_optimal_zero_stress_profile() -> None:
@@ -71,7 +71,7 @@ def test_bdd_pss10_optimal_zero_stress_profile() -> None:
     assert result.status == CalculationStatus.CALCULATED
     assert result.raw_value == 0.0
     assert result.risk_level == "Low risk"
-    assert result.normalized_value == 0.0
+    assert result.risk_value == 0.0
     assert result.attention_flags["severe_stress_or_burnout"] is False
 
 
@@ -107,4 +107,4 @@ def test_bdd_pss10_high_risk_severe_stress_burnout() -> None:
     assert result.raw_value == 34.0
     assert result.risk_level == "High risk"
     assert result.attention_flags["severe_stress_or_burnout"] is True
-    assert result.normalized_value == 77.4
+    assert result.risk_value == 77.4

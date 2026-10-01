@@ -50,3 +50,30 @@ def test_score_result_is_frozen() -> None:
     )
     with pytest.raises(FrozenInstanceError):
         res.raw_value = 20.0  # type: ignore[misc]
+
+
+@pytest.mark.parametrize(
+    "risk_value,expected_health_index",
+    [(0.0, 100.0), (100.0, 0.0), (37.5, 62.5), (25.8, 74.2)],
+)
+def test_health_index_inverts_risk_value(
+    risk_value: float, expected_health_index: float
+) -> None:
+    res = ScoreResult(
+        score_id="sample_score",
+        score_name="Sample Score",
+        domain="Cardiovascular",
+        status=CalculationStatus.CALCULATED,
+        risk_value=risk_value,
+    )
+    assert res.health_index == expected_health_index
+
+
+def test_health_index_is_none_when_not_calculable() -> None:
+    res = ScoreResult(
+        score_id="sample_score",
+        score_name="Sample Score",
+        domain="Cardiovascular",
+        status=CalculationStatus.NOT_CALCULABLE,
+    )
+    assert res.health_index is None

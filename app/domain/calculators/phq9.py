@@ -62,7 +62,7 @@ class PHQ9Calculator(RiskScoreCalculator[Phq9Data]):
                 "requires clinical attention."
             )
 
-        normalized_value = round(
+        risk_value = round(
             max(0.0, min(100.0, (total_score / _MAX_RAW_SCORE) * 100.0)),
             1,
         )
@@ -73,7 +73,7 @@ class PHQ9Calculator(RiskScoreCalculator[Phq9Data]):
             domain="Depression",
             status=CalculationStatus.CALCULATED,
             raw_value=total_score,
-            normalized_value=normalized_value,
+            risk_value=risk_value,
             risk_level=_severity_for_total(total_score),
             explanation=explanation,
             contributing_factors=factors,

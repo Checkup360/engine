@@ -81,7 +81,7 @@ class MetabolicSyndromeCalculator(RiskScoreCalculator[MetabolicSyndromeData]):
             domain="Metabolic Health",
             status=CalculationStatus.CALCULATED,
             raw_value=criteria_met,
-            normalized_value=round((criteria_met / 5.0) * 100.0, 1),
+            risk_value=round((criteria_met / 5.0) * 100.0, 1),
             risk_level=risk_level,
             explanation=explanation,
             contributing_factors={

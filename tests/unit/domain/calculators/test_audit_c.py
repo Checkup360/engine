@@ -25,7 +25,7 @@ def test_bdd_audit_c_gender_cutoff_score_3_is_low_risk_for_males() -> None:
     assert result.raw_value == 3.0
     assert result.risk_level == "Low risk"
     assert result.attention_flags["positive_screening"] is False
-    assert result.normalized_value == 37.5
+    assert result.risk_value == 37.5
 
 
 def test_bdd_audit_c_gender_cutoff_score_3_is_high_risk_for_females() -> None:
@@ -48,7 +48,7 @@ def test_bdd_audit_c_gender_cutoff_score_3_is_high_risk_for_females() -> None:
     assert result.raw_value == 3.0
     assert result.risk_level == "High risk"
     assert result.attention_flags["positive_screening"] is True
-    assert result.normalized_value == 51.0
+    assert result.risk_value == 51.0
 
 
 def test_bdd_audit_c_male_score_4_triggers_high_risk() -> None:
@@ -70,4 +70,4 @@ def test_bdd_audit_c_male_score_4_triggers_high_risk() -> None:
     assert result.raw_value == 4.0
     assert result.risk_level == "High risk"
     assert result.attention_flags["positive_screening"] is True
-    assert result.normalized_value == 51.0
+    assert result.risk_value == 51.0

@@ -33,7 +33,7 @@ def test_metabolic_syndrome_calculates_zero_criteria() -> None:
 
     assert result.status == CalculationStatus.CALCULATED
     assert result.raw_value == 0
-    assert result.normalized_value == 0.0
+    assert result.risk_value == 0.0
     assert result.risk_level == "Low risk"
     assert result.attention_flags["metabolic_syndrome"] is False
 
