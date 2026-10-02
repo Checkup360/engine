@@ -12,6 +12,7 @@ from __future__ import annotations
 
 from app.domain.entities.phq9_data import PHQ9_ITEM_FIELDS, Phq9Data
 from app.domain.services.risk_score_calculator import RiskScoreCalculator
+from app.domain.value_objects.health_topic import HealthTopic
 from app.domain.value_objects.score_result import CalculationStatus, ScoreResult
 
 _VALID_ITEM_SCORES = {0, 1, 2, 3}
@@ -36,6 +37,10 @@ class PHQ9Calculator(RiskScoreCalculator[Phq9Data]):
     @property
     def score_id(self) -> str:
         return "phq9"
+
+    @property
+    def topic(self) -> HealthTopic:
+        return HealthTopic(key="depression", label="Depression & Mental Health")
 
     def calculate(self, data: Phq9Data) -> ScoreResult:
         item_scores: dict[str, float] = {}

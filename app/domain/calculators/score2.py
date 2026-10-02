@@ -12,6 +12,7 @@ import math
 
 from app.domain.entities.score2_data import Score2Data
 from app.domain.services.risk_score_calculator import RiskScoreCalculator
+from app.domain.value_objects.health_topic import HealthTopic
 from app.domain.value_objects.score_result import CalculationStatus, ScoreResult
 
 # Baseline survival S0 at 10 years
@@ -61,6 +62,10 @@ class SCORE2Calculator(RiskScoreCalculator[Score2Data]):
     @property
     def score_id(self) -> str:
         return "score2"
+
+    @property
+    def topic(self) -> HealthTopic:
+        return HealthTopic(key="cardiovascular", label="Cardiovascular Disease")
 
     def calculate(self, data: Score2Data) -> ScoreResult:
         sex = data.sex.upper() if data.sex is not None else None

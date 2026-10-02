@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from app.domain.entities.nordic_nmq_data import NMQ_ANATOMICAL_ZONES, NordicNmqData
 from app.domain.services.risk_score_calculator import RiskScoreCalculator
+from app.domain.value_objects.health_topic import HealthTopic
 from app.domain.value_objects.score_result import CalculationStatus, ScoreResult
 
 
@@ -13,6 +14,10 @@ class NordicNMQCalculator(RiskScoreCalculator[NordicNmqData]):
     @property
     def score_id(self) -> str:
         return "nordic_nmq"
+
+    @property
+    def topic(self) -> HealthTopic:
+        return HealthTopic(key="nordic_nmq", label="Musculoskeletal Health")
 
     def calculate(self, data: NordicNmqData) -> ScoreResult:
         if not data.zones or len(data.zones) < len(NMQ_ANATOMICAL_ZONES):

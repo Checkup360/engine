@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from app.domain.entities.audit_c_data import AuditCData
 from app.domain.services.risk_score_calculator import RiskScoreCalculator
+from app.domain.value_objects.health_topic import HealthTopic
 from app.domain.value_objects.score_result import CalculationStatus, ScoreResult
 
 _VALID_SCORES = set(range(5))
@@ -15,6 +16,10 @@ class AuditCCalculator(RiskScoreCalculator[AuditCData]):
     @property
     def score_id(self) -> str:
         return "audit_c"
+
+    @property
+    def topic(self) -> HealthTopic:
+        return HealthTopic(key="audit_c", label="Alcohol")
 
     def calculate(self, data: AuditCData) -> ScoreResult:
         sex = data.sex.upper() if data.sex else None
