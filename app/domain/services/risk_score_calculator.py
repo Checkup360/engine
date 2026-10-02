@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import abc
 
+from app.domain.value_objects.health_topic import HealthTopic
 from app.domain.value_objects.score_result import ScoreResult
 
 
@@ -17,6 +18,12 @@ class RiskScoreCalculator[TData](abc.ABC):
     @abc.abstractmethod
     def score_id(self) -> str:
         """Returns the unique identifier of the score this calculator computes."""
+        pass
+
+    @property
+    @abc.abstractmethod
+    def topic(self) -> HealthTopic:
+        """Returns the health topic this score informs."""
         pass
 
     @abc.abstractmethod

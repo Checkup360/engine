@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from app.domain.entities.metabolic_syndrome_data import MetabolicSyndromeData
 from app.domain.services.risk_score_calculator import RiskScoreCalculator
+from app.domain.value_objects.health_topic import HealthTopic
 from app.domain.value_objects.score_result import CalculationStatus, ScoreResult
 
 _WAIST_THRESHOLDS = {"M": 102.0, "F": 88.0}
@@ -21,6 +22,10 @@ class MetabolicSyndromeCalculator(RiskScoreCalculator[MetabolicSyndromeData]):
     @property
     def score_id(self) -> str:
         return "metabolic_syndrome"
+
+    @property
+    def topic(self) -> HealthTopic:
+        return HealthTopic(key="metabolic_syndrome", label="Metabolic Syndrome")
 
     def calculate(self, data: MetabolicSyndromeData) -> ScoreResult:
         sex = data.sex.upper() if data.sex is not None else None

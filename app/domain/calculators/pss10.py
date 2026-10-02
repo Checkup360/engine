@@ -8,6 +8,7 @@ from app.domain.entities.pss10_data import (
     Pss10Data,
 )
 from app.domain.services.risk_score_calculator import RiskScoreCalculator
+from app.domain.value_objects.health_topic import HealthTopic
 from app.domain.value_objects.score_result import CalculationStatus, ScoreResult
 
 _VALID_SCORES = set(range(5))
@@ -19,6 +20,10 @@ class PSS10Calculator(RiskScoreCalculator[Pss10Data]):
     @property
     def score_id(self) -> str:
         return "pss10"
+
+    @property
+    def topic(self) -> HealthTopic:
+        return HealthTopic(key="pss10", label="Stress & Burnout")
 
     def calculate(self, data: Pss10Data) -> ScoreResult:
         factors: dict[str, float] = {}

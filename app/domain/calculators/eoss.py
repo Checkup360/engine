@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from app.domain.entities.eoss_data import EOSSData
 from app.domain.services.risk_score_calculator import RiskScoreCalculator
+from app.domain.value_objects.health_topic import HealthTopic
 from app.domain.value_objects.score_result import CalculationStatus, ScoreResult
 
 _VALID_STAGES = set(range(5))
@@ -22,6 +23,10 @@ class EOSSCalculator(RiskScoreCalculator[EOSSData]):
     @property
     def score_id(self) -> str:
         return "eoss"
+
+    @property
+    def topic(self) -> HealthTopic:
+        return HealthTopic(key="eoss", label="Obesity (EOSS)")
 
     def calculate(self, data: EOSSData) -> ScoreResult:
         stages = {

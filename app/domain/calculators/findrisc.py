@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from app.domain.entities.findrisc_data import FindriscData
 from app.domain.services.risk_score_calculator import RiskScoreCalculator
+from app.domain.value_objects.health_topic import HealthTopic
 from app.domain.value_objects.score_result import CalculationStatus, ScoreResult
 
 
@@ -13,6 +14,10 @@ class FINDRISCCalculator(RiskScoreCalculator[FindriscData]):
     @property
     def score_id(self) -> str:
         return "findrisc"
+
+    @property
+    def topic(self) -> HealthTopic:
+        return HealthTopic(key="diabetes", label="Diabetes")
 
     def calculate(self, data: FindriscData) -> ScoreResult:
         # 1. Validation

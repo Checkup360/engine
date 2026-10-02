@@ -5,6 +5,7 @@ import pytest
 from app.domain.exceptions import ScoreCalculatorNotFoundError
 from app.domain.services.risk_score_calculator import RiskScoreCalculator
 from app.domain.services.scoring_engine import ScoringEngine
+from app.domain.value_objects.health_topic import HealthTopic
 from app.domain.value_objects.score_result import CalculationStatus, ScoreResult
 
 
@@ -20,6 +21,10 @@ class MockCalculator(RiskScoreCalculator[MockData]):
     @property
     def score_id(self) -> str:
         return self._score_id
+
+    @property
+    def topic(self) -> HealthTopic:
+        return HealthTopic(key=f"{self._score_id}_topic", label="Mock topic")
 
     def calculate(self, data: MockData) -> ScoreResult:
         return ScoreResult(

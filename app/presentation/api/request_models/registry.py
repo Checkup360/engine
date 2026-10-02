@@ -6,6 +6,7 @@ from typing import Any, Protocol
 
 from pydantic import BaseModel
 
+from app.domain.value_objects.health_topic import HealthTopic
 from app.presentation.api.request_models.scores.audit_c_request import AuditCRequest
 from app.presentation.api.request_models.scores.eoss_request import EOSSRequest
 from app.presentation.api.request_models.scores.findrisc_request import (
@@ -74,10 +75,15 @@ def get_request_model(score_id: str) -> type[BaseModel] | None:
     return SCORE_REQUEST_REGISTRY.get(score_id)
 
 
-def get_catalog() -> list[ScoreCatalogItemResponse]:
+def get_catalog(
+    topics_by_score: dict[str, HealthTopic],
+) -> list[ScoreCatalogItemResponse]:
     """Dynamically generates the catalog of all registered score calculators."""
     catalog: list[ScoreCatalogItemResponse] = []
     for score_id, model_cls in SCORE_REQUEST_REGISTRY.items():
+        topic = topics_by_score.get(score_id)
+        if topic is None:
+            continue
         meta = SCORE_METADATA_REGISTRY.get(
             score_id, {"score_name": score_id.upper(), "domain": "General"}
         )
@@ -95,6 +101,8 @@ def get_catalog() -> list[ScoreCatalogItemResponse]:
                 score_id=score_id,
                 score_name=meta["score_name"],
                 domain=meta["domain"],
+                topic_key=topic.key,
+                topic_label=topic.label,
                 required_fields=required_fields,
                 optional_fields=optional_fields,
                 field_schema=model_cls.model_json_schema(),

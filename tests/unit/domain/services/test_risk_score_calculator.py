@@ -6,6 +6,7 @@ from app.domain.calculators.findrisc import FINDRISCCalculator
 from app.domain.calculators.phq9 import PHQ9Calculator
 from app.domain.calculators.stop_bang import STOPBANGCalculator
 from app.domain.services.risk_score_calculator import RiskScoreCalculator
+from app.domain.value_objects.health_topic import HealthTopic
 from app.domain.value_objects.score_result import (
     CalculationStatus,
     ScoreResult,
@@ -21,6 +22,10 @@ class DummyCalculator(RiskScoreCalculator[DummyData]):
     @property
     def score_id(self) -> str:
         return "dummy_score"
+
+    @property
+    def topic(self) -> HealthTopic:
+        return HealthTopic(key="dummy", label="Dummy")
 
     def calculate(self, data: DummyData) -> ScoreResult:
         if data.age is None:

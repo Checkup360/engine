@@ -94,6 +94,13 @@ The main endpoint to compute health scores is `POST /risk-scores/{score_id}`.
 `risk_value` (higher is riskier); the inversion happens only in
 `ScoreResult.health_index`. `risk_value` is never exposed by the API.
 
+**Health topics:** every calculator declares the health topic it informs
+(`RiskScoreCalculator.topic`: a stable `key` plus a readable `label`), exposed
+by `GET /risk-scores/catalog` as `topic_key` and `topic_label`. The key is what
+organizations weight and enable, and what content is tagged with. Adding a new
+calculator with its topic is enough for it to appear as a content category in
+the backend, the CMS and the member app.
+
 ### Available Risk Models (`score_id`):
 - `findrisc`: 10-year risk assessment for Type 2 Diabetes Mellitus (Finnish Diabetes Risk Score).
 - `stop_bang`: STOP-BANG screening questionnaire for Obstructive Sleep Apnea (OSA) risk.

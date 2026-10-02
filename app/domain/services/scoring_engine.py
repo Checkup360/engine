@@ -7,6 +7,7 @@ from typing import Any
 
 from app.domain.exceptions import ScoreCalculatorNotFoundError
 from app.domain.services.risk_score_calculator import RiskScoreCalculator
+from app.domain.value_objects.health_topic import HealthTopic
 from app.domain.value_objects.score_result import ScoreResult
 
 
@@ -34,3 +35,10 @@ class ScoringEngine:
                 f"Score calculator '{score_id}' not found."
             )
         return calculator.calculate(data)
+
+    def topics_by_score(self) -> dict[str, HealthTopic]:
+        """Returns the health topic declared by each registered calculator."""
+        return {
+            score_id: calculator.topic
+            for score_id, calculator in self._calculators.items()
+        }

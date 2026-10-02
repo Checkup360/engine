@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from app.domain.entities.stop_bang_data import StopBangData
 from app.domain.services.risk_score_calculator import RiskScoreCalculator
+from app.domain.value_objects.health_topic import HealthTopic
 from app.domain.value_objects.score_result import CalculationStatus, ScoreResult
 
 
@@ -13,6 +14,10 @@ class STOPBANGCalculator(RiskScoreCalculator[StopBangData]):
     @property
     def score_id(self) -> str:
         return "stop_bang"
+
+    @property
+    def topic(self) -> HealthTopic:
+        return HealthTopic(key="sleep_apnea", label="Sleep Apnea")
 
     def calculate(self, data: StopBangData) -> ScoreResult:
         # 1. Validation
