@@ -211,6 +211,10 @@ def test_get_catalog_returns_200_and_available_scores() -> None:
     assert "score2" in score_ids
 
     findrisc = next(item for item in catalog if item["score_id"] == "findrisc")
+    assert findrisc["topic_key"] == "diabetes"
+    assert findrisc["topic_label"] == "Diabetes"
+    audit_c = next(item for item in catalog if item["score_id"] == "audit_c")
+    assert audit_c["topic_key"] == "audit_c"
     assert findrisc["score_name"] == "FINDRISC"
     assert findrisc["domain"] == "Diabetes"
     assert "age" in findrisc["required_fields"]

@@ -4,11 +4,15 @@ from __future__ import annotations
 
 from typing import Annotated, Any
 
-from fastapi import APIRouter, Body, Path, status
+from fastapi import APIRouter, Body, Depends, Path, status
 
 from app.application.use_cases.compute_risk_score import ComputeRiskScoreUseCase
 from app.domain.exceptions import ScoreCalculatorNotFoundError
-from app.presentation.api.dependencies import ComputeRiskScoreUseCaseDep
+from app.domain.services.scoring_engine import ScoringEngine
+from app.presentation.api.dependencies import (
+    ComputeRiskScoreUseCaseDep,
+    get_scoring_engine,
+)
 from app.presentation.api.request_models.registry import (
     get_catalog,
     get_request_model,
@@ -29,10 +33,12 @@ router = APIRouter(prefix="/risk-scores", tags=["risk-scores"])
     status_code=status.HTTP_200_OK,
     summary="Get catalog of available risk scores and required fields",
 )
-def get_score_catalog() -> list[ScoreCatalogItemResponse]:
-    """Returns the list of available risk score calculators
-    and their required parameters."""
-    return get_catalog()
+def get_score_catalog(
+    engine: Annotated[ScoringEngine, Depends(get_scoring_engine)],
+) -> list[ScoreCatalogItemResponse]:
+    """Returns the list of available risk score calculators,
+    their health topic and their required parameters."""
+    return get_catalog(engine.topics_by_score())
 
 
 @router.post(
