@@ -49,23 +49,23 @@ SCORE_METADATA_REGISTRY: dict[str, dict[str, str]] = {
     "findrisc": {"score_name": "FINDRISC", "domain": "Diabetes"},
     "eoss": {
         "score_name": "EOSS",
-        "domain": "Obesity-related Health Impact",
+        "domain": "Obesity Impact",
     },
     "metabolic_syndrome": {
         "score_name": "Metabolic Syndrome",
         "domain": "Metabolic Health",
     },
     "stop_bang": {"score_name": "STOP-BANG", "domain": "Sleep Apnea"},
-    "phq9": {"score_name": "PHQ-9", "domain": "Depression"},
+    "phq9": {"score_name": "PHQ-9", "domain": "Mood & Well-being"},
     "score2": {"score_name": "SCORE2", "domain": "Cardiovascular"},
     "nordic_nmq": {
         "score_name": "Standardized Nordic Questionnaire (NMQ)",
-        "domain": "Ergonomics",
+        "domain": "Musculoskeletal",
     },
-    "audit_c": {"score_name": "AUDIT-C Alcohol Risk", "domain": "Alcohol Use"},
+    "audit_c": {"score_name": "AUDIT-C Alcohol Risk", "domain": "Alcohol Habits"},
     "pss10": {
         "score_name": "PSS-10 Perceived Stress Scale",
-        "domain": "Psychological Health",
+        "domain": "Stress & Burnout",
     },
 }
 
