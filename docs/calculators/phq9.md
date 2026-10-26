@@ -1,119 +1,138 @@
-# PHQ-9 (Patient Health Questionnaire-9)
+# PHQ-9 (Patient Health Questionnaire-9 - Depression Severity)
 
-**Domain:** Depression / Mood and emotional well-being
-**Score Range:** 0 to 27 points
-**Instrument:** 9-item depression symptom questionnaire for the previous two weeks
+**Domain:** Depression
+**Health Topic:** `depression` ("Depression & Mental Health")
+**Raw Score Range:** 0 to 27 points
+**Standardized Scale:** 0 to 100 (`health_index`, higher is healthier)
 
-The PHQ-9 measures the severity of depressive symptoms. It is a symptom-severity
-screening instrument and is not, by itself, a clinical diagnosis.
-
----
-
-## Response Scoring
-
-Each item is scored using the following response scale:
-
-| Response | Points |
-| :--- | :---: |
-| Not at all | **0** |
-| Several days | **1** |
-| More than half the days | **2** |
-| Nearly every day | **3** |
-
-The total score is the sum of all nine item values:
-
-`total_score = Q1 + Q2 + Q3 + Q4 + Q5 + Q6 + Q7 + Q8 + Q9`
-
-The item fields used by the engine are:
-
-1. `little_interest`
-2. `feeling_down`
-3. `sleep_trouble`
-4. `tired_energy`
-5. `appetite`
-6. `feeling_bad`
-7. `concentration`
-8. `psychomotor`
-9. `self_harm_thoughts`
-
-Every item must be an integer from 0 through 3.
+The **PHQ-9** (Kroenke, Spitzer, & Williams, 2001) is a 9-item clinical depression screening instrument. It assesses the frequency of diagnostic DSM criteria over the past two weeks and flags suicidal or self-harm ideation (Item 9).
 
 ---
 
-## Severity Interpretation
+## 1. Questions & Scoring Rules
 
-| Total Score | Severity |
-| :--- | :--- |
-| **0–4** | None / minimal |
-| **5–9** | Mild |
-| **10–14** | Moderate |
-| **15–19** | Moderately severe |
-| **20–27** | Severe |
+Each of the 9 items is scored on a 4-point scale:
+- `0`: Not at all
+- `1`: Several days
+- `2`: More than half the days
+- `3`: Nearly every day
 
----
-
-## Item 9 Attention Flag
-
-`self_harm_thoughts` is exposed separately because it concerns thoughts of death
-or self-harm. A positive response does not get hidden by the total severity score.
-
-The standardized result contains:
-
-- `attention_flags["self_harm_thoughts"]`: `true` when item 9 is greater than 0.
-- `contributing_factors["self_harm_flag"]`: numeric compatibility flag (`0` or `1`).
-- `explanation`: an attention message when item 9 is positive.
-
-A positive item 9 response requires appropriate clinical attention and must not be
-interpreted only through the total PHQ-9 severity category.
+### Items:
+1. `little_interest`: Little interest or pleasure in doing things.
+2. `feeling_down`: Feeling down, depressed, or hopeless.
+3. `sleep_trouble`: Trouble falling or staying asleep, or sleeping too much.
+4. `tired_energy`: Feeling tired or having little energy.
+5. `appetite`: Poor appetite or overeating.
+6. `feeling_bad`: Feeling bad about yourself — or that you are a failure or have let yourself or your family down.
+7. `concentration`: Trouble concentrating on things, such as reading the newspaper or watching television.
+8. `psychomotor`: Moving or speaking so slowly that other people could have noticed, or being so fidgety/restless.
+9. `self_harm_thoughts`: **Thoughts that you would be better off dead or of hurting yourself in some way.**
 
 ---
 
-## Engine Required Variables
+## 2. Risk Value and Health Index (0–100 Scale)
 
-To calculate PHQ-9 via the `ScoringEngine`, the `Phq9Data` object must have all
-nine fields populated:
+The raw score is the sum of all 9 items ($\text{raw\_value} \in [0, 27]$).
 
-- `little_interest` (int: 0-3)
-- `feeling_down` (int: 0-3)
-- `sleep_trouble` (int: 0-3)
-- `tired_energy` (int: 0-3)
-- `appetite` (int: 0-3)
-- `feeling_bad` (int: 0-3)
-- `concentration` (int: 0-3)
-- `psychomotor` (int: 0-3)
-- `self_harm_thoughts` (int: 0-3)
+### Internal Risk Value
+$$\text{risk\_value} = \text{round}\left(\frac{\text{raw\_value}}{27.0} \times 100.0, 1\right)$$
 
-If at least one value is missing or outside the supported range, the calculator
-returns `NOT_CALCULABLE`.
+### Health Index
+Exposed in `ScoreResult.health_index` according to the platform standard (**higher is healthier**):
+$$\text{health\_index} = 100.0 - \text{risk\_value}$$
 
 ---
 
-## HTTP Endpoint
+## 3. Clinical Risk Interpretation
 
-`POST /risk-scores/phq9`
+| Total Score (0–27) | Risk Level | Clinical Severity |
+| :--- | :--- | :--- |
+| **0–4** | **Low risk** | Minimal or no depressive symptoms. |
+| **5–9** | **Mild risk** | Mild depressive symptoms; supportive monitoring. |
+| **10–14** | **Moderate risk** | Moderate depression; clinical evaluation indicated. |
+| **15–19** | **High risk** | Moderately severe depression; active treatment plan recommended. |
+| **20–27** | **Very high risk** | Severe depression; immediate multidisciplinary psychiatric intervention. |
 
-Example payload:
+---
+
+## 4. Critical Safety Attention Flag (Item 9)
+
+If `self_harm_thoughts > 0`, the calculator triggers:
+- `attention_flags.self_harm_thoughts = true`
+- Explanation advisory notice: *"Item 9 (thoughts of death or self-harm) is positive and requires clinical attention."*
+
+> [!CAUTION]
+> In client applications, this attention flag immediately triggers supportive resource displays (e.g., suicide crisis hotlines like 135 in Argentina) and occupational health medical guidance.
+
+---
+
+## 5. Engine Required Variables
+
+To calculate PHQ-9 via the `ScoringEngine`, the `Phq9Data` entity requires all 9 items:
+
+- `little_interest` (int: 0–3)
+- `feeling_down` (int: 0–3)
+- `sleep_trouble` (int: 0–3)
+- `tired_energy` (int: 0–3)
+- `appetite` (int: 0–3)
+- `feeling_bad` (int: 0–3)
+- `concentration` (int: 0–3)
+- `psychomotor` (int: 0–3)
+- `self_harm_thoughts` (int: 0–3)
+
+If any item is missing or outside 0–3, the calculator returns `CalculationStatus.NOT_CALCULABLE`.
+
+---
+
+## 6. HTTP Endpoint & Example
+
+- **Method:** `POST`
+- **Path:** `/risk-scores/phq9`
+
+### Request Payload
 
 ```json
 {
   "little_interest": 1,
   "feeling_down": 1,
-  "sleep_trouble": 0,
+  "sleep_trouble": 2,
   "tired_energy": 2,
-  "appetite": 0,
-  "feeling_bad": 1,
+  "appetite": 1,
+  "feeling_bad": 0,
   "concentration": 0,
   "psychomotor": 0,
   "self_harm_thoughts": 0
 }
 ```
 
----
+### Example Response (200 OK)
 
-## Source
-
-- Kroenke K, Spitzer RL, Williams JBW. *The PHQ-9: Validity of a Brief
-  Depression Severity Measure*. Journal of General Internal Medicine.
-  2001;16(9):606-613.
-- The score bands and item response scale follow the PHQ-9 specification
-  provided in `remaining_health_risk_scores.pdf`.
+```json
+{
+  "score_id": "phq9",
+  "score_name": "PHQ-9",
+  "domain": "Depression",
+  "topic_key": "depression",
+  "topic_label": "Depression & Mental Health",
+  "status": "CALCULATED",
+  "raw_value": 7.0,
+  "health_index": 74.1,
+  "risk_level": "Mild risk",
+  "explanation": null,
+  "contributing_factors": {
+    "little_interest": 1.0,
+    "feeling_down": 1.0,
+    "sleep_trouble": 2.0,
+    "tired_energy": 2.0,
+    "appetite": 1.0,
+    "feeling_bad": 0.0,
+    "concentration": 0.0,
+    "psychomotor": 0.0,
+    "self_harm_thoughts": 0.0,
+    "self_harm_flag": 0.0
+  },
+  "attention_flags": {
+    "self_harm_thoughts": false
+  }
+}
+```

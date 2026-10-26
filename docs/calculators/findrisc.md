@@ -1,13 +1,15 @@
 # FINDRISC (Finnish Diabetes Risk Score)
 
 **Domain:** Diabetes (Risk of developing Type 2 Diabetes)
-**Score Range:** 0 to 26 points
+**Health Topic:** `diabetes` ("Diabetes")
+**Raw Score Range:** 0 to 26 points
+**Standardized Scale:** 0 to 100 (`health_index`, higher is healthier)
 
-The FINDRISC score estimates an individual's risk of developing Type 2 Diabetes over the next 10 years based on 8 easily measurable risk factors, without requiring complex laboratory tests.
+The **FINDRISC** score estimates an individual's risk of developing Type 2 Diabetes Mellitus over the next 10 years based on 8 clinical and lifestyle risk factors, without requiring invasive laboratory tests.
 
 ---
 
-## Scoring Table (Business Rules)
+## 1. Scoring Table (Business Rules)
 
 ### 1. Age
 - `<45` years: **0 points**
@@ -16,79 +18,141 @@ The FINDRISC score estimates an individual's risk of developing Type 2 Diabetes 
 - `≥65` years: **4 points**
 
 ### 2. BMI (Body Mass Index)
-Calculated as `weight (kg) / height (m)²`.
+Calculated as $\text{weight (kg)} / \text{height (m)}^2$:
 - `<25`: **0 points**
 - `25–<30`: **1 point**
 - `≥30`: **3 points**
 
 ### 3. Waist Circumference
-Risk varies by sex.
+Risk varies by biological sex:
 
-**Men:**
+**Men (`M`):**
 - `<94 cm`: **0 points**
 - `94–101 cm`: **3 points**
 - `≥102 cm`: **4 points**
 
-**Women:**
+**Women (`F`):**
 - `<80 cm`: **0 points**
 - `80–87 cm`: **3 points**
 - `≥88 cm`: **4 points**
 
 ### 4. Physical Activity
-*Do you engage in at least 30 minutes of daily physical activity at work or during leisure time?*
+*At least 30 minutes of daily physical activity at work or leisure?*
 - **Yes**: **0 points**
 - **No**: **2 points**
 
 ### 5. Consumption of Fruits and Vegetables
-*Do you eat vegetables, fruits, or berries every day?*
+*Daily consumption of vegetables, fruits, or berries?*
 - **Yes**: **0 points**
 - **No**: **1 point**
 
 ### 6. Antihypertensive Medication
-*Do you take or have you regularly taken medication for high blood pressure?*
+*Regular or current intake of medication for high blood pressure?*
 - **No**: **0 points**
 - **Yes**: **2 points**
 
 ### 7. Previous High Blood Glucose
-*Have you ever been found to have high blood glucose levels (e.g., in medical check-ups, during an illness, or pregnancy)?*
+*History of high blood glucose (e.g., check-ups, illness, pregnancy)?*
 - **No**: **0 points**
 - **Yes**: **5 points**
 
 ### 8. Family History of Diabetes
-*Has any member of your biological family been diagnosed with Type 1 or Type 2 diabetes?*
+*Diagnosed Type 1 or Type 2 diabetes in biological family?*
 - **No**: **0 points**
-- **Yes: Grandparents, aunts/uncles, or first cousins (2nd degree)**: **3 points**
-- **Yes: Parents, siblings, or own children (1st degree)**: **5 points**
+- **Second degree (grandparents, aunts/uncles, cousins)**: **3 points**
+- **First degree (parents, siblings, children)**: **5 points**
 
 ---
 
-## Risk Interpretation
+## 2. Risk Value and Health Index (0–100 Scale)
 
-The total score (0-26) categorizes the risk of developing Type 2 Diabetes within the next 10 years:
+The raw score is the sum of points across all 8 factors ($\text{raw\_value} \in [0, 26]$).
 
-| Total Score | Risk Level | Approximate Probability (10 years) |
+### Internal Risk Value
+$$\text{risk\_value} = \text{round}\left(\frac{\text{raw\_value}}{26.0} \times 100.0, 1\right)$$
+
+### Health Index
+Exposed in `ScoreResult.health_index` according to the platform standard (**higher is healthier**):
+$$\text{health\_index} = 100.0 - \text{risk\_value}$$
+
+---
+
+## 3. Clinical Risk Interpretation
+
+| Total Score (0–26) | Risk Level | 10-Year Estimated Probability |
 | :--- | :--- | :--- |
-| **0–6** | Low | ~1% (1 in 100) |
-| **7–11** | Slightly elevated | ~4% (1 in 25) |
-| **12–14** | Moderate | ~17% (1 in 6) |
-| **15–20** | High | ~33% (1 in 3) |
-| **21–26** | Very high | ~50% (1 in 2) |
+| **0–6** | **Low risk** | ~1% (1 in 100) |
+| **7–11** | **Slightly elevated risk** | ~4% (1 in 25) |
+| **12–14** | **Moderate risk** | ~17% (1 in 6) |
+| **15–20** | **High risk** | ~33% (1 in 3) |
+| **21–26** | **Very high risk** | ~50% (1 in 2) |
 
 ---
 
-## Engine Required Variables
+## 4. Engine Required Variables
 
-To calculate FINDRISC via the `ScoringEngine`, the `FindriscData` object **must** have the following fields fully populated (none can be null):
+To calculate FINDRISC via the `ScoringEngine`, the `FindriscData` entity requires:
 
 - `age` (int)
-- `weight` (float)
-- `height` (float)
-- `sex` (str: "M" or "F")
-- `waist_circumference` (float)
+- `weight` (float, in kg)
+- `height` (float, in meters)
+- `sex` (str: `"M"` or `"F"`)
+- `waist_circumference` (float, in cm)
 - `daily_physical_activity` (bool)
 - `fruits_vegetables` (bool)
 - `hypertension_medication` (bool)
 - `previous_high_glucose` (bool)
-- `family_diabetes` (str: "no", "second_degree", "first_degree")
+- `family_diabetes` (str: `"no"`, `"second_degree"`, `"first_degree"`)
 
-If at least one of these values is missing, the calculator will return a result with the `NOT_CALCULABLE` status.
+If any value is missing, the calculator returns `CalculationStatus.NOT_CALCULABLE`.
+
+---
+
+## 5. HTTP Endpoint & Example
+
+- **Method:** `POST`
+- **Path:** `/risk-scores/findrisc`
+
+### Request Payload
+
+```json
+{
+  "age": 45,
+  "sex": "M",
+  "weight": 85,
+  "height": 1.78,
+  "waist_circumference": 98,
+  "daily_physical_activity": true,
+  "fruits_vegetables": true,
+  "hypertension_medication": false,
+  "previous_high_glucose": false,
+  "family_diabetes": "second_degree"
+}
+```
+
+### Example Response (200 OK)
+
+```json
+{
+  "score_id": "findrisc",
+  "score_name": "FINDRISC",
+  "domain": "Diabetes",
+  "topic_key": "diabetes",
+  "topic_label": "Diabetes",
+  "status": "CALCULATED",
+  "raw_value": 9.0,
+  "health_index": 65.4,
+  "risk_level": "Slightly elevated risk",
+  "contributing_factors": {
+    "age": 2.0,
+    "bmi": 1.0,
+    "waist": 3.0,
+    "physical_activity": 0.0,
+    "fruits_vegetables": 0.0,
+    "hypertension": 0.0,
+    "high_glucose": 0.0,
+    "family_diabetes": 3.0
+  },
+  "attention_flags": {}
+}
+```

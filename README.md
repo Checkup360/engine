@@ -102,10 +102,28 @@ calculator with its topic is enough for it to appear as a content category in
 the backend, the CMS and the member app.
 
 ### Available Risk Models (`score_id`):
-- `findrisc`: 10-year risk assessment for Type 2 Diabetes Mellitus (Finnish Diabetes Risk Score).
-- `stop_bang`: STOP-BANG screening questionnaire for Obstructive Sleep Apnea (OSA) risk.
 
-### Example 1: Compute FINDRISC Score
+| `score_id` | Model Name | Health Topic (`key` / `label`) | Documentation |
+|---|---|---|---|
+| `findrisc` | FINDRISC | `diabetes` / Diabetes | [`docs/calculators/findrisc.md`](docs/calculators/findrisc.md) |
+| `stop_bang` | STOP-BANG | `sleep_apnea` / Sleep Apnea | [`docs/calculators/stop_bang.md`](docs/calculators/stop_bang.md) |
+| `score2` | SCORE2 Cardiovascular Risk | `cardiovascular` / Cardiovascular Risk | [`docs/calculators/score2.md`](docs/calculators/score2.md) |
+| `metabolic_syndrome` | Metabolic Syndrome (AHA) | `metabolic_syndrome` / Metabolic Syndrome | [`docs/calculators/metabolic_syndrome.md`](docs/calculators/metabolic_syndrome.md) |
+| `phq9` | PHQ-9 Depression Severity | `depression` / Depression & Mental Health | [`docs/calculators/phq9.md`](docs/calculators/phq9.md) |
+| `eoss` | Edmonton Obesity Staging (EOSS) | `eoss` / Obesity (EOSS) | [`docs/calculators/eoss.md`](docs/calculators/eoss.md) |
+| `audit_c` | AUDIT-C Alcohol Risk | `audit_c` / Alcohol | [`docs/calculators/audit_c.md`](docs/calculators/audit_c.md) |
+| `pss10` | PSS-10 Perceived Stress Scale | `pss10` / Stress & Burnout | [`docs/calculators/pss10.md`](docs/calculators/pss10.md) |
+| `nordic_nmq` | Standardized Nordic Questionnaire | `nordic_nmq` / Musculoskeletal Health | [`docs/calculators/nordic_nmq.md`](docs/calculators/nordic_nmq.md) |
+
+### Score Catalog
+
+To dynamically inspect all supported calculators and their metadata:
+
+```bash
+curl -X 'GET' 'http://localhost:8001/risk-scores/catalog' -H 'accept: application/json'
+```
+
+### Example: Compute FINDRISC Score
 
 ```bash
 curl -X 'POST' \
@@ -126,7 +144,7 @@ curl -X 'POST' \
 }'
 ```
 
-### Example 2: Compute STOP-BANG Score
+### Example: Compute STOP-BANG Score
 
 ```bash
 curl -X 'POST' \

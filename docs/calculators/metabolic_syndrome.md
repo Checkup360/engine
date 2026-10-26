@@ -1,32 +1,130 @@
-# Metabolic Syndrome
+# Metabolic Syndrome (AHA/NHLBI Criteria)
 
 **Domain:** Metabolic Health
-**Score range:** 0 to 5 criteria
-**Rule:** Metabolic syndrome is present when at least 3 criteria are met.
+**Health Topic:** `metabolic_syndrome` ("Metabolic Syndrome")
+**Raw Score Range:** 0 to 5 criteria met
+**Standardized Scale:** 0 to 100 (`health_index`, higher is healthier)
 
-The calculator follows the five harmonized AHA/NHLBI criteria. Measurements use
-the units shown below, and treatment for hypertension or hyperglycemia counts as
-the corresponding criterion.
+The **Metabolic Syndrome** calculator implements the American Heart Association and National Heart, Lung, and Blood Institute (AHA/NHLBI, 2005) criteria. Metabolic syndrome is diagnosed when $\ge 3$ of the 5 criteria are present.
 
-| Criterion | Threshold |
+---
+
+## 1. Diagnostic Criteria (AHA/NHLBI)
+
+| Criterion | Diagnostic Threshold |
 | :--- | :--- |
-| Elevated waist circumference | **>=102 cm** for men, **>=88 cm** for women |
-| Elevated triglycerides | **>=150 mg/dL** |
-| Low HDL cholesterol | **<40 mg/dL** for men, **<50 mg/dL** for women |
-| Elevated blood pressure | Systolic **>=130 mmHg**, diastolic **>=85 mmHg**, or antihypertensive treatment |
-| Elevated fasting glucose | **>=100 mg/dL** or glucose-lowering treatment |
+| **1. Abdominal Obesity** | Waist circumference $\ge 102\text{ cm}$ (Men) or $\ge 88\text{ cm}$ (Women) |
+| **2. Triglycerides** | Serum triglycerides $\ge 150\text{ mg/dL}$ |
+| **3. HDL Cholesterol** | Serum HDL $< 40\text{ mg/dL}$ (Men) or $< 50\text{ mg/dL}$ (Women) |
+| **4. Blood Pressure** | Systolic $\ge 130\text{ mmHg}$ OR Diastolic $\ge 85\text{ mmHg}$ OR on antihypertensive medication |
+| **5. Fasting Glucose** | Fasting glucose $\ge 100\text{ mg/dL}$ OR on glucose-lowering medication |
 
-The standardized result contains `raw_value` as `criteria_met` from 0 to 5,
-the five criterion flags, and `attention_flags["metabolic_syndrome"]` as the
-boolean result. Missing required data returns `NOT_CALCULABLE`.
+---
 
-## HTTP Endpoint
+## 2. Risk Value and Health Index (0–100 Scale)
 
-`POST /risk-scores/metabolic_syndrome`
+The raw value is the count of criteria met ($\text{raw\_value} \in [0, 5]$).
 
-## Source
+### Internal Risk Value
+$$\text{risk\_value} = \text{round}\left(\frac{\text{criteria\_met}}{5.0} \times 100.0, 1\right)$$
 
-- Alberti KG, Eckel RH, Grundy SM, et al. Harmonizing the metabolic syndrome.
-  *Circulation*. 2009;120(16):1640-1645.
-- Thresholds follow the AHA/NHLBI criteria specified in
-  `remaining_health_risk_scores.pdf`.
+### Health Index
+Exposed in `ScoreResult.health_index` according to the platform standard (**higher is healthier**):
+$$\text{health\_index} = 100.0 - \text{risk\_value}$$
+
+---
+
+## 3. Clinical Risk Interpretation
+
+| Criteria Met (0–5) | Risk Level | Interpretation |
+| :--- | :--- | :--- |
+| **0** | **Low risk** | Optimal metabolic health (no criteria met). |
+| **1** | **Low risk** | Low metabolic risk (1 of 5 criteria met). |
+| **2** | **Moderate risk** | Moderate metabolic risk (2 of 5 criteria met; pre-syndrome state). |
+| **3–5** | **High risk** | **Metabolic syndrome present** (diagnostic threshold met). |
+
+---
+
+## 4. Attention Flags
+
+The evaluation flags individual criteria and overall syndrome diagnosis in `attention_flags`:
+- `waist_elevated` (bool)
+- `triglycerides_elevated` (bool)
+- `hdl_low` (bool)
+- `blood_pressure_elevated` (bool)
+- `fasting_glucose_elevated` (bool)
+- `metabolic_syndrome` (bool: `true` if $\ge 3$ criteria met)
+
+---
+
+## 5. Engine Required Variables
+
+To calculate Metabolic Syndrome via the `ScoringEngine`, the `MetabolicSyndromeData` entity requires:
+
+- `sex` (str: `"M"` or `"F"`)
+- `waist_circumference` (float, in cm)
+- `triglycerides` (float, in mg/dL)
+- `hdl_cholesterol` (float, in mg/dL)
+- `systolic_blood_pressure` (float, in mmHg)
+- `diastolic_blood_pressure` (float, in mmHg)
+- `hypertension_medication` (bool)
+- `fasting_glucose` (float, in mg/dL)
+- `glucose_lowering_medication` (bool)
+
+If any variable is missing, the calculator returns `CalculationStatus.NOT_CALCULABLE`.
+
+---
+
+## 6. HTTP Endpoint & Example
+
+- **Method:** `POST`
+- **Path:** `/risk-scores/metabolic_syndrome`
+
+### Request Payload
+
+```json
+{
+  "sex": "M",
+  "waist_circumference": 105,
+  "triglycerides": 180,
+  "hdl_cholesterol": 38,
+  "systolic_blood_pressure": 135,
+  "diastolic_blood_pressure": 88,
+  "hypertension_medication": true,
+  "fasting_glucose": 95,
+  "glucose_lowering_medication": false
+}
+```
+
+### Example Response (200 OK)
+
+```json
+{
+  "score_id": "metabolic_syndrome",
+  "score_name": "Metabolic Syndrome",
+  "domain": "Metabolic Health",
+  "topic_key": "metabolic_syndrome",
+  "topic_label": "Metabolic Syndrome",
+  "status": "CALCULATED",
+  "raw_value": 4.0,
+  "health_index": 20.0,
+  "risk_level": "High risk",
+  "explanation": "Metabolic syndrome present (4 of 5 criteria met).",
+  "contributing_factors": {
+    "waist_elevated": 1.0,
+    "triglycerides_elevated": 1.0,
+    "hdl_low": 1.0,
+    "blood_pressure_elevated": 1.0,
+    "fasting_glucose_elevated": 0.0,
+    "criteria_met": 4.0
+  },
+  "attention_flags": {
+    "waist_elevated": true,
+    "triglycerides_elevated": true,
+    "hdl_low": true,
+    "blood_pressure_elevated": true,
+    "fasting_glucose_elevated": false,
+    "metabolic_syndrome": true
+  }
+}
+```
